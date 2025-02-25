@@ -12,19 +12,9 @@ import { OnchainKitProvider } from "@coinbase/onchainkit";
 import { getTokens } from "@coinbase/onchainkit/api";
 import { Token, TokenImage } from "@coinbase/onchainkit/token";
 import { useEffect, useState } from "react";
-import {
-  arbitrum,
-  arbitrumSepolia,
-  base,
-  baseSepolia,
-  flowMainnet,
-  flowTestnet,
-} from "viem/chains";
+import { avalanche, avalancheFuji, base } from "viem/chains";
 import { AgentAvatar } from "./AgentAvatar";
-import arbitrumIcon from "./assets/crypto/arbitrum-full-primary.svg";
-import baseIcon from "./assets/crypto/base-full-white.svg";
-import flowIcon from "./assets/crypto/flow-full-white.svg";
-import solanaIcon from "./assets/crypto/solana-full-color.svg";
+import avalancheFullIcon from "./assets/crypto/avalanche-full.svg";
 import { ChainButton } from "./ChainButton";
 import { PvPRuleCard } from "./PvPRuleCard";
 import { coreAbi } from "@/lib/contract.types";
@@ -105,7 +95,7 @@ export function CreateRoomModal({
   const [searchAgentQuery, setSearchAgentQuery] = useState("");
   const [tokenSearchQuery, setTokenSearchQuery] = useState("");
   const [loadingAgents, setLoadingAgents] = useState(true);
-  const [chain, setChain] = useState<SupportedChains>(base);
+  const [chain, setChain] = useState<SupportedChains>(avalancheFuji);
   const [settings, setSettings] = useState<RoomSettings>(
     createRoomFormState.settings || {
       name: "",
@@ -353,71 +343,25 @@ export function CreateRoomModal({
   };
 
   const renderChainSelection = () => (
-    <div>
-      <div className="font-medium text-green-300">Testnet</div>
-      <div className="grid grid-cols-2 gap-4">
+    <div className="grid grid-cols-2 gap-4">
+      <div>
+        <div className="font-medium text-green-300">Mainnet</div>
         <ChainButton
-          iconUrl={baseIcon.src}
-          selected={chain.id === baseSepolia.id}
-          className="bg-[#0052FF] w-full h-[60px]"
+          iconUrl={avalancheFullIcon.src}
+          selected={chain.id === avalanche.id}
+          className="bg-[#DF3F3E] w-full h-[60px]"
           iconClassName="w-[160px] h-[40px]"
-          onClick={() => setChain(baseSepolia)}
-        />
-        <ChainButton
-          disabled={true}
-          iconUrl={arbitrumIcon.src}
-          selected={chain.id === arbitrumSepolia.id}
-          className="bg-[#28A0F0] w-full h-[60px]"
-          iconClassName="w-[160px] h-[40px]"
-          onClick={() => setChain(arbitrumSepolia)}
-        />
-        <ChainButton
-          disabled={true}
-          iconUrl={flowIcon.src}
-          selected={chain.id === flowTestnet.id}
-          className="bg-[#00EF8B] w-full h-[60px]"
-          iconClassName="w-[160px] h-[40px]"
-          onClick={() => setChain(flowTestnet)}
-        />
-        <ChainButton
-          disabled={true}
-          iconUrl={solanaIcon.src}
-          selected={false}
-          className="bg-[#512DA8] w-full h-[60px] opacity-50 cursor-not-allowed"
-          iconClassName="w-[160px] h-[40px]"
+          onClick={() => setChain(avalanche)}
         />
       </div>
-      <div className="font-medium text-red-300">Mainnet</div>
-      <div className="grid grid-cols-2 gap-4">
+      <div>
+        <div className="font-medium text-green-300">Testnet</div>
         <ChainButton
-          iconUrl={baseIcon.src}
-          selected={chain.id === base.id}
-          className="bg-[#0052FF] w-full h-[60px]"
+          iconUrl={avalancheFullIcon.src}
+          selected={chain.id === avalancheFuji.id}
+          className="bg-[#DF3F3E] w-full h-[60px]"
           iconClassName="w-[160px] h-[40px]"
-          onClick={() => setChain(base)}
-        />
-        <ChainButton
-          disabled={true}
-          iconUrl={arbitrumIcon.src}
-          selected={chain.id === arbitrum.id}
-          className="bg-[#28A0F0] w-full h-[60px]"
-          iconClassName="w-[160px] h-[40px]"
-          onClick={() => setChain(base)}
-        />
-        <ChainButton
-          disabled={true}
-          iconUrl={flowIcon.src}
-          selected={chain.id === flowMainnet.id}
-          className="bg-[#00EF8B] w-full h-[60px]"
-          iconClassName="w-[160px] h-[40px]"
-          onClick={() => setChain(flowMainnet)}
-        />
-        <ChainButton
-          disabled={true}
-          iconUrl={solanaIcon.src}
-          selected={false}
-          className="bg-[#512DA8] w-full h-[60px] opacity-50 cursor-not-allowed"
-          iconClassName="w-[160px] h-[40px]"
+          onClick={() => setChain(avalancheFuji)}
         />
       </div>
     </div>
@@ -593,7 +537,7 @@ export function CreateRoomModal({
     ) {
       return (
         <OnchainKitProvider
-          chain={chain}
+          chain={base}
           apiKey={process.env.NEXT_PUBLIC_ONCHAINKIT_API_KEY}
         >
           <div className="flex flex-col gap-6">

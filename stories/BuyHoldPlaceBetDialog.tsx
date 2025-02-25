@@ -180,7 +180,7 @@ export function BuyHoldPlaceBetDialog({
                     className="w-1/2 mb-2 border-primary/50 rounded"
                   />
                   <span className="text-lg font-medium text-primary/70">
-                    ETH
+                    AVAX
                   </span>
                 </div>
 
@@ -211,7 +211,7 @@ export function BuyHoldPlaceBetDialog({
           disabled={betAmountError !== null || !selectedBetType}
           className="mt-4 text-center bg-primary rounded hover:bg-secondary-foreground/20 min-w-24 h-10 w-fit text-white text-lg font-medium mx-auto"
         >
-          Bet {localBetAmount} ETH on {selectedBetType?.toUpperCase() || "???"}
+          Bet {localBetAmount} AVAX on {selectedBetType?.toUpperCase() || "???"}
         </Button>
       </DialogContent>
     </Dialog>

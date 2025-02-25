@@ -1,6 +1,8 @@
 import {
   arbitrum,
   arbitrumSepolia,
+  avalanche,
+  avalancheFuji,
   base,
   baseSepolia,
   flowMainnet,
@@ -11,6 +13,8 @@ export const BEAR_RED_HEX = "#E9171A";
 export const BULL_GREEN_HEX = "#17E97D";
 
 export type SupportedChains =
+  | typeof avalancheFuji
+  | typeof avalanche
   | typeof baseSepolia
   | typeof arbitrumSepolia
   | typeof flowTestnet

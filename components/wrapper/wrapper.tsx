@@ -6,15 +6,13 @@ import { Navbar } from "@/stories/Navbar";
 import { getDefaultConfig, RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import "@rainbow-me/rainbowkit/styles.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { arbitrumSepolia, baseSepolia } from "viem/chains";
+import { avalanche, avalancheFuji } from "viem/chains";
 import { WagmiProvider } from "wagmi";
-
-
 
 export const config = getDefaultConfig({
   appName: "PvPvAI",
   projectId: `${process.env.NEXT_PUBLIC_RAINBOWKIT_PROJECT_ID}`,
-  chains: [baseSepolia, arbitrumSepolia],
+  chains: [avalanche, avalancheFuji],
   ssr: true, // If your dApp uses server side rendering (SSR)
 });
 

@@ -6,6 +6,7 @@ import flowFullIcon from "@/stories/assets/crypto/flow-full.svg";
 import flowIcon from "@/stories/assets/crypto/flow.svg";
 import solanaIcon from "@/stories/assets/crypto/solana-color.svg";
 import solanaFullIcon from "@/stories/assets/crypto/solana-full-color.svg";
+import avalanche from "@/stories/assets/crypto/avalanche.png";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import EthereumLogo from "../stories/assets/crypto/ethereum.png";
@@ -118,6 +119,20 @@ export const chainMetadata: Record<number, ChainMetadata> = {
     name: "Ethereum",
     icon: EthereumLogo.src,
     iconFull: EthereumLogo.src,
+    family: "EVM",
+  },
+  43114: {
+    id: 43114,
+    name: "Avalanche",
+    icon: avalanche.src,
+    iconFull: avalanche.src,
+    family: "EVM",
+  },
+  43113: {
+    id: 43113,
+    name: "Avalanche Fuji",
+    icon: avalanche.src,
+    iconFull: avalanche.src,
     family: "EVM",
   },
 } as const;
