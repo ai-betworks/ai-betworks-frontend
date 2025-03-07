@@ -1,12 +1,16 @@
 import arbitrumFullIcon from "@/stories/assets/crypto/arbitrum-full-primary.svg";
 import arbitrumIcon from "@/stories/assets/crypto/arbitrum.svg";
+import avalancheIcon from "@/stories/assets/crypto/avalanche.svg";
 import baseFullIcon from "@/stories/assets/crypto/base-full-white.svg";
 import baseIcon from "@/stories/assets/crypto/base.svg";
 import flowFullIcon from "@/stories/assets/crypto/flow-full.svg";
 import flowIcon from "@/stories/assets/crypto/flow.svg";
+import scrollFullIcon from "@/stories/assets/crypto/scroll-full-white.svg";
+import scrollIcon from "@/stories/assets/crypto/scroll.svg";
 import solanaIcon from "@/stories/assets/crypto/solana-color.svg";
 import solanaFullIcon from "@/stories/assets/crypto/solana-full-color.svg";
-import avalanche from "@/stories/assets/crypto/avalanche.png";
+import sonicFullIcon from "@/stories/assets/crypto/sonic-full-white.svg";
+import sonicIcon from "@/stories/assets/crypto/sonic.svg";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import EthereumLogo from "../stories/assets/crypto/ethereum.png";
@@ -76,6 +80,7 @@ export interface ChainMetadata {
   icon: string;
   iconFull: string;
   family: "EVM" | "Solana";
+  nativeSymbol: string;
 }
 
 export const chainMetadata: Record<number, ChainMetadata> = {
@@ -85,6 +90,7 @@ export const chainMetadata: Record<number, ChainMetadata> = {
     icon: baseIcon.src,
     iconFull: baseFullIcon.src,
     family: "EVM",
+    nativeSymbol: "ETH",
   },
   8453: {
     id: 8453,
@@ -92,6 +98,7 @@ export const chainMetadata: Record<number, ChainMetadata> = {
     icon: baseIcon.src,
     iconFull: baseFullIcon.src,
     family: "EVM",
+    nativeSymbol: "ETH",
   },
   421614: {
     id: 421614,
@@ -99,6 +106,7 @@ export const chainMetadata: Record<number, ChainMetadata> = {
     icon: arbitrumIcon.src,
     iconFull: arbitrumFullIcon.src,
     family: "EVM",
+    nativeSymbol: "ETH",
   },
   0: {
     id: 0,
@@ -106,6 +114,7 @@ export const chainMetadata: Record<number, ChainMetadata> = {
     icon: flowIcon.src,
     iconFull: flowFullIcon.src,
     family: "EVM",
+    nativeSymbol: "FLOW",
   },
   1399811149: {
     id: 1399811149,
@@ -113,6 +122,7 @@ export const chainMetadata: Record<number, ChainMetadata> = {
     icon: solanaIcon.src,
     iconFull: solanaFullIcon.src,
     family: "Solana",
+    nativeSymbol: "SOL",
   },
   1: {
     id: 1,
@@ -120,20 +130,55 @@ export const chainMetadata: Record<number, ChainMetadata> = {
     icon: EthereumLogo.src,
     iconFull: EthereumLogo.src,
     family: "EVM",
+    nativeSymbol: "ETH",
   },
   43114: {
     id: 43114,
     name: "Avalanche",
-    icon: avalanche.src,
-    iconFull: avalanche.src,
+    icon: avalancheIcon.src,
+    iconFull: avalancheIcon.src,
     family: "EVM",
+    nativeSymbol: "AVAX",
   },
   43113: {
     id: 43113,
     name: "Avalanche Fuji",
-    icon: avalanche.src,
-    iconFull: avalanche.src,
+    icon: avalancheIcon.src,
+    iconFull: avalancheIcon.src,
     family: "EVM",
+    nativeSymbol: "AVAX",
+  },
+  146: {
+    id: 146,
+    name: "Sonic",
+    icon: sonicIcon.src,
+    iconFull: sonicFullIcon.src,
+    family: "EVM",
+    nativeSymbol: "S",
+  },
+  57054: {
+    id: 57054,
+    name: "Sonic Blaze Testnet",
+    icon: sonicIcon.src,
+    iconFull: sonicFullIcon.src,
+    family: "EVM",
+    nativeSymbol: "S",
+  },
+  534352: {
+    id: 534352,
+    name: "Scroll",
+    icon: scrollIcon.src,
+    iconFull: scrollFullIcon.src,
+    family: "EVM",
+    nativeSymbol: "ETH",
+  },
+  534351: {
+    id: 534351,
+    name: "Scroll Sepolia",
+    icon: scrollIcon.src,
+    iconFull: scrollFullIcon.src,
+    family: "EVM",
+    nativeSymbol: "ETH",
   },
 } as const;
 

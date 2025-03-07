@@ -1,3 +1,4 @@
+//TODO Deprecate this file
 import { AgentChatMessage } from "@/stories/AgentChat";
 import { faker } from "@faker-js/faker";
 import { Database } from "./database.types";

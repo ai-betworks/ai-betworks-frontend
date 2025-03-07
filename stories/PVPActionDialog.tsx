@@ -23,7 +23,7 @@ import {
 } from "@/lib/backend.types";
 import { roomAbi } from "@/lib/contract.types";
 import { Tables } from "@/lib/database.types";
-import { blockEndTimeToTimer } from "@/lib/utils";
+import { blockEndTimeToTimer, getChainMetadata } from "@/lib/utils";
 import * as React from "react";
 import { getAddress, parseEther, stringToHex } from "viem";
 import { useAccount, usePublicClient, useWriteContract } from "wagmi";
@@ -87,17 +87,19 @@ export function PvpActionDialog({
   agentAddress,
   roomData,
 }: PvpActionDialogProps) {
-  const { address: userAddress } = useAccount();
+  const { address: userAddress, chain } = useAccount();
   const { writeContract } = useWriteContract();
+  const { toast } = useToast();
   const publicClient = usePublicClient();
 
   const [pvpVerb, setPvpVerb] = React.useState<string | null>(null);
   const [attackInputText, setAttackInputText] = React.useState<string>("");
   const [pvpStatuses, setPvpStatuses] = React.useState<PvpStatus[]>([]);
-  const { toast } = useToast();
   const [poisonFind, setPoisonFind] = React.useState("");
   const [poisonReplace, setPoisonReplace] = React.useState("");
   const [poisonCaseSensitive, setPoisonCaseSensitive] = React.useState(false);
+
+  const nativeSymbol = getChainMetadata(roomData.chain_id).nativeSymbol;
 
   const handleInvokePvpAction = async (verb: string, input: string) => {
     try {
@@ -241,7 +243,9 @@ export function PvpActionDialog({
               <div className="w-full flex items-center justify-between">
                 {/* Attack */}
                 <div className="space-y-2 text-center">
-                  <span className="block">{0.0001} AVAX</span>
+                  <span className="block">
+                    {0.0001} {nativeSymbol}
+                  </span>
                   <PvPRuleCard
                     variant="ATTACK"
                     selected={pvpVerb === "attack"}
@@ -251,7 +255,9 @@ export function PvpActionDialog({
 
                 {/* Silence */}
                 <div className="space-y-2 text-center">
-                  <span className="block">{0.0002} AVAX</span>
+                  <span className="block">
+                    {0.0002} {nativeSymbol}
+                  </span>
                   <PvPRuleCard
                     variant="SILENCE"
                     selected={pvpVerb === "silence"}
@@ -298,7 +304,9 @@ export function PvpActionDialog({
               <div className="w-full flex items-center justify-between">
                 {/* Deafen */}
                 <div className="space-y-2 text-center">
-                  <span className="block">{0.0002} AVAX</span>
+                  <span className="block">
+                    {0.0002} {nativeSymbol}
+                  </span>
                   <PvPRuleCard
                     variant="DEAFEN"
                     selected={pvpVerb === "deafen"}
@@ -314,7 +322,9 @@ export function PvpActionDialog({
 
                 {/* Poison */}
                 <div className="space-y-2 text-center">
-                  <span className="block">{0.001} AVAX</span>
+                  <span className="block">
+                    {0.001} {nativeSymbol}
+                  </span>
                   <PvPRuleCard
                     variant="POISON"
                     selected={pvpVerb === "poison"}

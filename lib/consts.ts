@@ -7,6 +7,10 @@ import {
   baseSepolia,
   flowMainnet,
   flowTestnet,
+  scroll,
+  scrollSepolia,
+  sonic,
+  sonicTestnet,
 } from "viem/chains";
 
 export const BEAR_RED_HEX = "#E9171A";
@@ -20,4 +24,8 @@ export type SupportedChains =
   | typeof flowTestnet
   | typeof base
   | typeof arbitrum
-  | typeof flowMainnet;
+  | typeof flowMainnet
+  | typeof scrollSepolia
+  | typeof scroll
+  | typeof sonicTestnet
+  | typeof sonic;
