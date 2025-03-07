@@ -100,6 +100,7 @@ export function PvpActionDialog({
   const [poisonCaseSensitive, setPoisonCaseSensitive] = React.useState(false);
 
   const nativeSymbol = getChainMetadata(roomData.chain_id).nativeSymbol;
+  const chainIcon = getChainMetadata(roomData.chain_id).icon;
 
   const handleInvokePvpAction = async (verb: string, input: string) => {
     try {
@@ -244,6 +245,7 @@ export function PvpActionDialog({
                 {/* Attack */}
                 <div className="space-y-2 text-center">
                   <span className="block">
+                    <img src={chainIcon} className="w-4 h-4 inline-block" />{" "}
                     {0.0001} {nativeSymbol}
                   </span>
                   <PvPRuleCard
@@ -256,6 +258,7 @@ export function PvpActionDialog({
                 {/* Silence */}
                 <div className="space-y-2 text-center">
                   <span className="block">
+                    <img src={chainIcon} className="w-4 h-4 inline-block" />{" "}
                     {0.0002} {nativeSymbol}
                   </span>
                   <PvPRuleCard
@@ -305,6 +308,7 @@ export function PvpActionDialog({
                 {/* Deafen */}
                 <div className="space-y-2 text-center">
                   <span className="block">
+                    <img src={chainIcon} className="w-4 h-4 inline-block" />{" "}
                     {0.0002} {nativeSymbol}
                   </span>
                   <PvPRuleCard
@@ -323,6 +327,7 @@ export function PvpActionDialog({
                 {/* Poison */}
                 <div className="space-y-2 text-center">
                   <span className="block">
+                    <img src={chainIcon} className="w-4 h-4 inline-block" />{" "}
                     {0.001} {nativeSymbol}
                   </span>
                   <PvPRuleCard

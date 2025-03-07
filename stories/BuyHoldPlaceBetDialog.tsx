@@ -58,6 +58,7 @@ export function BuyHoldPlaceBetDialog({
   const [betAmountError, setBetAmountError] = useState<string | null>(null);
 
   const nativeSymbol = getChainMetadata(roomData.chain_id).nativeSymbol;
+  const chainIcon = getChainMetadata(roomData.chain_id).icon;
   const handleBetAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (parseFloat(e.target.value) < 0) {
       setBetAmountError("Bet amount must be greater than 0");
@@ -181,6 +182,7 @@ export function BuyHoldPlaceBetDialog({
                     className="w-1/2 mb-2 border-primary/50 rounded"
                   />
                   <span className="text-lg font-medium text-primary/70">
+                    <img src={chainIcon} className="w-4 h-4 inline-block" />{" "}
                     {nativeSymbol}
                   </span>
                 </div>
@@ -212,7 +214,9 @@ export function BuyHoldPlaceBetDialog({
           disabled={betAmountError !== null || !selectedBetType}
           className="mt-4 text-center bg-primary rounded hover:bg-secondary-foreground/20 min-w-24 h-10 w-fit text-white text-lg font-medium mx-auto"
         >
-          Bet {localBetAmount} {nativeSymbol} on{" "}
+          Bet {localBetAmount}
+          <img src={chainIcon} className="w-4 h-4 inline-block" />{" "}
+          {nativeSymbol} on{" "}
           {selectedBetType?.toUpperCase() || "???"}
         </Button>
       </DialogContent>
