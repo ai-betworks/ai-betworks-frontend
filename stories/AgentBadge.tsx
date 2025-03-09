@@ -101,7 +101,7 @@ export const AgentBadge: FC<AgentBadgeProps> = ({
             return id === 0 ? (
               content
             ) : (
-              <Link href={`/agent/${id}`} className="group">
+              <Link href={`/agents/${id}`} className="group">
                 {content}
               </Link>
             );

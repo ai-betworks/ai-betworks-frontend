@@ -10,6 +10,7 @@ interface AgentDecisionChatLineProps {
   decision: number;
   creatorAddress?: string;
   popularity?: number;
+  tokenSymbol?: string;
 }
 
 const decisionConfig = {
@@ -36,6 +37,7 @@ export function AgentDecisionChatLine({
   decision,
   creatorAddress,
   popularity,
+  tokenSymbol,
 }: AgentDecisionChatLineProps) {
   const { data: agent } = useAgentQuery(agent_id);
 
@@ -79,7 +81,7 @@ export function AgentDecisionChatLine({
               >
                 {decisionDetails.text}
               </span>{" "}
-              ETH
+              {tokenSymbol}
             </div>
           </div>
         </div>

@@ -214,9 +214,9 @@ export function BuyHoldPlaceBetDialog({
           disabled={betAmountError !== null || !selectedBetType}
           className="mt-4 text-center bg-primary rounded hover:bg-secondary-foreground/20 min-w-24 h-10 w-fit text-white text-lg font-medium mx-auto"
         >
-          Bet {localBetAmount}
-          <img src={chainIcon} className="w-4 h-4 inline-block" />{" "}
-          {nativeSymbol} on{" "}
+          Bet
+          <img src={chainIcon} className="w-4 h-4 inline-block" />
+          {localBetAmount} {nativeSymbol} on{" "}
           {selectedBetType?.toUpperCase() || "???"}
         </Button>
       </DialogContent>

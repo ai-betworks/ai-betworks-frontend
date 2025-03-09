@@ -6,20 +6,19 @@ import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import supabase from "@/lib/config";
 import { SupportedChains } from "@/lib/consts";
+import { coreAbi } from "@/lib/contract.types";
 import { Tables } from "@/lib/database.types";
 import { cn, generateRandomColor, getChainMetadata } from "@/lib/utils";
 import { OnchainKitProvider } from "@coinbase/onchainkit";
 import { getTokens } from "@coinbase/onchainkit/api";
 import { Token, TokenImage } from "@coinbase/onchainkit/token";
 import { useEffect, useState } from "react";
-import { avalanche, avalancheFuji, base } from "viem/chains";
-import { AgentAvatar } from "./AgentAvatar";
-import avalancheFullIcon from "./assets/crypto/avalanche-full.svg";
-import { ChainButton } from "./ChainButton";
-import { PvPRuleCard } from "./PvPRuleCard";
-import { coreAbi } from "@/lib/contract.types";
 import { formatEther, getAddress } from "viem";
+import { avalancheFuji, base } from "viem/chains";
 import { useAccount, useContractWrite, usePublicClient } from "wagmi";
+import { AgentAvatar } from "./AgentAvatar";
+import { NetworkSelector } from "./NetworkSelector";
+import { PvPRuleCard } from "./PvPRuleCard";
 
 type PvPRule =
   | "SILENCE"
@@ -343,28 +342,7 @@ export function CreateRoomModal({
   };
 
   const renderChainSelection = () => (
-    <div className="grid grid-cols-2 gap-4">
-      <div>
-        <div className="font-medium text-green-300">Mainnet</div>
-        <ChainButton
-          iconUrl={avalancheFullIcon.src}
-          selected={chain.id === avalanche.id}
-          className="bg-[#DF3F3E] w-full h-[60px]"
-          iconClassName="w-[160px] h-[40px]"
-          onClick={() => setChain(avalanche)}
-        />
-      </div>
-      <div>
-        <div className="font-medium text-green-300">Testnet</div>
-        <ChainButton
-          iconUrl={avalancheFullIcon.src}
-          selected={chain.id === avalancheFuji.id}
-          className="bg-[#DF3F3E] w-full h-[60px]"
-          iconClassName="w-[160px] h-[40px]"
-          onClick={() => setChain(avalancheFuji)}
-        />
-      </div>
-    </div>
+    <NetworkSelector selectedChain={chain} onChainSelect={setChain} />
   );
 
   const renderAgentSelection = () => {

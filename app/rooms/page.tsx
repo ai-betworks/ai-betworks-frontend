@@ -94,7 +94,7 @@ const RoomsPage: FC = () => {
             color,
             chain_id,
             room_config,
-            rounds(
+            rounds!inner(
               id,
               created_at,
               round_agents!inner(

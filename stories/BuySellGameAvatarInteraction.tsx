@@ -70,7 +70,7 @@ export const BuySellGameAvatarInteraction: FC<
         />
         {showName && (
           <Link
-            href={`/agent/${id}`}
+            href={`/agents/${id}`}
             className="text-2xl font-medium truncate max-w-full"
             style={{ color: borderColor }}
           >

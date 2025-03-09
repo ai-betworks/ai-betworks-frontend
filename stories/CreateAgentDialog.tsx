@@ -1,22 +1,17 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
-import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { ColorPicker } from "@/components/ui/color-picker";
 import {
   Dialog,
   DialogContent,
-  DialogTrigger,
-  DialogTitle,
   DialogHeader,
+  DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog";
-import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import { ColorPicker } from "@/components/ui/color-picker";
-import { readContract } from "viem/actions";
 import {
   Select,
   SelectContent,
@@ -24,10 +19,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { SupportedChains } from "@/lib/consts";
 import { coreAbi } from "@/lib/contract.types";
-import { useAccount, usePublicClient, useWriteContract, useWalletClient } from "wagmi";
 import { Database } from "@/lib/database.types";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useEffect, useState } from "react";
 import { formatEther } from "viem";
+import { base } from "viem/chains";
+import { useAccount, usePublicClient, useWalletClient } from "wagmi";
+import { NetworkSelector } from "./NetworkSelector";
 // import { wagmiConfig, walletClient } from "@/components/wrapper/wrapper";
 
 // Helper function to generate a random hex color.
@@ -38,16 +39,17 @@ const generateRandomColor = (includeHash = false) => {
   return includeHash ? `#${randomColor}` : randomColor;
 };
 
-// Increase total steps to 7:
+// Increase total steps to 8:
 // 0: Method Selection, 1: Basic Info, 2: Platform, 3: Model Settings,
-// 4: Character Card, 5: JSON Preview, 6: Confirmation.
-const totalSteps = 7;
+// 4: Character Card, 5: JSON Preview, 6: Network Selection, 7: Confirmation.
+const totalSteps = 8;
 
 export default function CreateAgentModal() {
   const publicClient = usePublicClient();
   const { data: walletClient } = useWalletClient();
   const [step, setStep] = useState(0);
   const [open, setOpen] = useState(false);
+  const [chain, setChain] = useState<SupportedChains>(base);
   const [agentData, setAgentData] = useState({
     imageUrl: "",
     color: "",
@@ -112,7 +114,7 @@ export default function CreateAgentModal() {
   const nextStep = () => setStep((prev) => Math.min(prev + 1, totalSteps - 1));
   const prevStep = () => setStep((prev) => Math.max(prev - 1, 0));
 
-  // Update step titles for 7 steps.
+  // Update step titles for 8 steps.
   const getStepTitle = () => {
     const stepTitles = [
       "How do you want to create your agent?",
@@ -121,6 +123,7 @@ export default function CreateAgentModal() {
       "Model Settings",
       "Character Card",
       "Review JSON",
+      "Select Network",
       "Confirmation",
     ];
     return (
@@ -163,7 +166,7 @@ export default function CreateAgentModal() {
 
   useEffect(() => {
     if (!publicClient) return;
-    
+
     getFees()
       .then((result) => {
         setFees(result);
@@ -177,7 +180,7 @@ export default function CreateAgentModal() {
       if (!publicClient) {
         throw new Error("Public client not available");
       }
-      
+
       if (fees && userAddress && walletClient) {
         const { request } = await publicClient.simulateContract({
           abi: coreAbi,
@@ -185,8 +188,9 @@ export default function CreateAgentModal() {
           functionName: "deposit",
           value: fees[0], // Assuming fees[0] is the deposit amount as BigInt
           account: userAddress,
+          chain: chain, // Use the selected chain
         });
-        
+
         if (!walletClient) {
           throw new Error("Wallet client not available");
         }
@@ -258,7 +262,12 @@ export default function CreateAgentModal() {
     </div>
   );
 
-  // Confirmation view (last step)
+  // Network selection view
+  const renderNetworkSelection = () => (
+    <NetworkSelector selectedChain={chain} onChainSelect={setChain} />
+  );
+
+  // Updated confirmation view to use the selected chain's token symbol
   const renderConfirmation = () => (
     <div className="flex flex-col gap-6">
       <div className="p-4 text-foreground rounded-lg border-2 border-gray-400 flex flex-col gap-2 text-center">
@@ -266,7 +275,8 @@ export default function CreateAgentModal() {
           Creating this agent will cost
         </div>
         <div className="text-foreground text-xl">
-          {fees ? formatEther(fees[1]) : "Loading..."} ETH
+          {fees ? formatEther(fees[1]) : "Loading..."}{" "}
+          {chain.nativeCurrency.symbol}
         </div>
         <div className="text-sm text-muted-foreground">
           2% of all fees generated will go to you.
@@ -427,7 +437,8 @@ export default function CreateAgentModal() {
               <Input
                 name="model"
                 value={agentData.characterCard.model}
-                readOnly
+                onChange={handleCharacterCardChange}
+                placeholder="Enter model name"
                 className="bg-muted"
               />
             </div>
@@ -511,6 +522,8 @@ export default function CreateAgentModal() {
       case 5:
         return renderJsonPreview();
       case 6:
+        return renderNetworkSelection();
+      case 7:
         return renderConfirmation();
       default:
         return null;

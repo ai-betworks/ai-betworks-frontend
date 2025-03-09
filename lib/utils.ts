@@ -81,6 +81,7 @@ export interface ChainMetadata {
   iconFull: string;
   family: "EVM" | "Solana";
   nativeSymbol: string;
+  primaryColor?: string;
 }
 
 export const chainMetadata: Record<number, ChainMetadata> = {
@@ -91,6 +92,7 @@ export const chainMetadata: Record<number, ChainMetadata> = {
     iconFull: baseFullIcon.src,
     family: "EVM",
     nativeSymbol: "ETH",
+    primaryColor: "#0052FF",
   },
   8453: {
     id: 8453,
@@ -99,6 +101,7 @@ export const chainMetadata: Record<number, ChainMetadata> = {
     iconFull: baseFullIcon.src,
     family: "EVM",
     nativeSymbol: "ETH",
+    primaryColor: "#0052FF",
   },
   421614: {
     id: 421614,
@@ -155,6 +158,8 @@ export const chainMetadata: Record<number, ChainMetadata> = {
     iconFull: sonicFullIcon.src,
     family: "EVM",
     nativeSymbol: "S",
+    primaryColor: "#F5F5F5",
+    // primaryColor: "#141416",
   },
   57054: {
     id: 57054,
@@ -163,6 +168,7 @@ export const chainMetadata: Record<number, ChainMetadata> = {
     iconFull: sonicFullIcon.src,
     family: "EVM",
     nativeSymbol: "S",
+    primaryColor: "#F5F5F5",
   },
   534352: {
     id: 534352,

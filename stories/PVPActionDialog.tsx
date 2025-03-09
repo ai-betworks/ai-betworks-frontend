@@ -244,8 +244,8 @@ export function PvpActionDialog({
               <div className="w-full flex items-center justify-between">
                 {/* Attack */}
                 <div className="space-y-2 text-center">
-                  <span className="block">
-                    <img src={chainIcon} className="w-4 h-4 inline-block" />{" "}
+                  <span className="block flex items-center justify-center">
+                    <img src={chainIcon} className="w-4 h-4 mr-1" />
                     {0.0001} {nativeSymbol}
                   </span>
                   <PvPRuleCard
@@ -257,8 +257,8 @@ export function PvpActionDialog({
 
                 {/* Silence */}
                 <div className="space-y-2 text-center">
-                  <span className="block">
-                    <img src={chainIcon} className="w-4 h-4 inline-block" />{" "}
+                  <span className="block flex items-center justify-center">
+                    <img src={chainIcon} className="w-4 h-4 mr-1" />
                     {0.0002} {nativeSymbol}
                   </span>
                   <PvPRuleCard
@@ -307,8 +307,8 @@ export function PvpActionDialog({
               <div className="w-full flex items-center justify-between">
                 {/* Deafen */}
                 <div className="space-y-2 text-center">
-                  <span className="block">
-                    <img src={chainIcon} className="w-4 h-4 inline-block" />{" "}
+                  <span className="block flex items-center justify-center">
+                    <img src={chainIcon} className="w-4 h-4 mr-1" />
                     {0.0002} {nativeSymbol}
                   </span>
                   <PvPRuleCard
@@ -326,8 +326,8 @@ export function PvpActionDialog({
 
                 {/* Poison */}
                 <div className="space-y-2 text-center">
-                  <span className="block">
-                    <img src={chainIcon} className="w-4 h-4 inline-block" />{" "}
+                  <span className="block flex items-center justify-center">
+                    <img src={chainIcon} className="w-4 h-4 mr-1" />
                     {0.001} {nativeSymbol}
                   </span>
                   <PvPRuleCard

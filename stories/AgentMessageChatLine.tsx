@@ -36,6 +36,16 @@ const emptyMessageFallback = (agentName: string): React.ReactNode => {
   );
 };
 
+/**
+ * Checks if a status effect is still active based on its endTime
+ * @param effect The status effect to check
+ * @returns boolean indicating if the effect is still active
+ */
+const isStatusEffectActive = (effect: { endTime: number }): boolean => {
+  const now = Math.floor(Date.now() / 1000); // Current time in seconds
+  return effect.endTime > now;
+};
+
 //
 const RenderMessageWithPvp = (
   message: z.infer<typeof agentMessageAiChatOutputSchema>,
@@ -63,7 +73,7 @@ const RenderMessageWithPvp = (
   // Process sender's poison effect first
   const senderPoisoned = message.content.pvpStatusEffects[
     senderAgent.id.toString()
-  ]?.find((effect) => effect.verb === "poison");
+  ]?.find((effect) => effect.verb === "poison" && isStatusEffectActive(effect));
 
   let displayText = message.content.originalMessage.content.text;
 
@@ -104,8 +114,15 @@ const RenderMessageWithPvp = (
     const targetAgent = agents?.find((a) => a.id === targetId);
     if (!targetAgent) return;
 
-    // Check if target is deafened
+    // Check if target is deafened - only if the deafen effect is still active
+    const deafenEffect = message.content.pvpStatusEffects[
+      targetId.toString()
+    ]?.find(
+      (effect) => effect.verb === "deafen" && isStatusEffectActive(effect)
+    );
+
     if (
+      deafenEffect &&
       !Object.keys(message.content.postPvpMessages).includes(
         targetId.toString()
       )
@@ -114,10 +131,12 @@ const RenderMessageWithPvp = (
       return;
     }
 
-    // Check if target is poisoned
+    // Check if target is poisoned - only if the poison effect is still active
     const poisonEffect = message.content.pvpStatusEffects[
       targetId.toString()
-    ]?.find((effect) => effect.verb === "poison");
+    ]?.find(
+      (effect) => effect.verb === "poison" && isStatusEffectActive(effect)
+    );
 
     if (poisonEffect) {
       const params = poisonStatusSchema.shape.parameters.safeParse(

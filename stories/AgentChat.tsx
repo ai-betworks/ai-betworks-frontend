@@ -26,6 +26,7 @@ interface AgentChatProps {
   loading?: boolean;
   roundId?: number;
   roomId: number;
+  tokenSymbol?: string;
 }
 
 export function AgentChat({
@@ -35,13 +36,13 @@ export function AgentChat({
   loading = false,
   roundId,
   roomId,
+  tokenSymbol,
 }: AgentChatProps) {
   const endOfMessagesRef = useRef<HTMLDivElement>(null);
 
   // Scroll to the bottom when agent messages update.
   // TODO: active later? this is annoying when new messages come in
   useLayoutEffect(() => {
-
     endOfMessagesRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
@@ -109,6 +110,7 @@ export function AgentChat({
                         key={index}
                         agent_id={agentDecisionMessage.content.agentId}
                         decision={agentDecisionMessage.content.decision}
+                        tokenSymbol={tokenSymbol}
                       />
                     );
                   case WsMessageTypes.AGENT_MESSAGE:

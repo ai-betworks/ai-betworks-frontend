@@ -1,25 +1,25 @@
 "use client";
 
 import AnimatedBackground from "@/components/ui/animated-tabs";
-import { useEffect, useState } from "react";
+import { Card } from "@/components/ui/card";
 import {
   Table,
   TableBody,
+  TableCell,
   TableHead,
   TableHeader,
   TableRow,
-  TableCell,
 } from "@/components/ui/table";
-import { Card } from "@/components/ui/card";
 import supabase from "@/lib/config";
 import { AgentAvatar } from "@/stories/AgentAvatar";
-import { formatDistanceToNow } from "date-fns";
-import { ClipboardCopy, ChevronLeft, ChevronRight } from "lucide-react"; // Icons
-import usdcIcon from "@/stories/assets/crypto/usdc.svg";
-import Image from "next/image";
 import autonomeIcon from "@/stories/assets/ai/autonome-full.svg";
 import gaiaIcon from "@/stories/assets/ai/gaia.png";
 import localIcon from "@/stories/assets/ai/server.png";
+import usdcIcon from "@/stories/assets/crypto/usdc.svg";
+import { formatDistanceToNow } from "date-fns";
+import { ChevronLeft, ChevronRight, ClipboardCopy } from "lucide-react"; // Icons
+import Image from "next/image";
+import { useEffect, useState } from "react";
 
 import CreateAgentDialog from "@/stories/CreateAgentDialog";
 import Link from "next/link";
@@ -180,6 +180,7 @@ export default function AgentsPage() {
                         imageUrl={agent.image_url || ""}
                         borderColor={agent.color}
                         variant="sm"
+                        disableLink={true}
                       />
                       {agent.display_name}
                     </Link>

@@ -287,7 +287,7 @@ function RoundDetailsAndNavigation({
           {/* <span className="text-sm text-gray-400">Buy / Hold / Sell</span> */}
           {(() => {
             try {
-              const token = roomData.room_config?.token;
+              const token = (roomData.room_config as any).token;
               if (!token) return null;
 
               return (
@@ -535,9 +535,8 @@ export default function RoomDetailPage() {
     isLoading: isLoadingPublicChatMessages,
   } = useRoundUserMessages(currentRoundId, {
     // refetchInterval:
-      // process.env.NEXT_PUBLIC_USE_POLLING_ON_CHAT === "true" ? 1000 : false,
-  }
-);
+    // process.env.NEXT_PUBLIC_USE_POLLING_ON_CHAT === "true" ? 1000 : false,
+  });
   const { data: roundAgents, isLoading: isLoadingAgents } =
     useRoundAgents(currentRoundId);
   // const { data: gameMaster, isLoading: isLoadingGM } =
@@ -728,7 +727,7 @@ export default function RoomDetailPage() {
 
     // Use the earliest (first) round's created_at as the baseline.
     const currentRoundCreatedAt = roundList[0]?.created_at;
-    const roundDuration = roomData.room_config.round_duration;
+    const roundDuration = (roomData.room_config as any).round_duration;
     if (!currentRoundCreatedAt) return;
 
     const updateTimer = () => {
@@ -813,8 +812,6 @@ export default function RoomDetailPage() {
               isLoadingAgents={isLoadingAgents}
               roundIdFromContract={currentRoundContractId}
               roomData={roomData}
-              roundStatus={roundStatus}
-              roundActive={roundActive}
               isRoundTimerExpired={isRoundTimerExpired}
             />
             {/* Agent Chat: shows only agent messages */}
@@ -826,6 +823,7 @@ export default function RoomDetailPage() {
                 roomId={roomId}
                 loading={isLoadingRoundAgentMessages}
                 roundId={currentRoundId}
+                tokenSymbol={(roomData.room_config as any)?.token?.symbol}
               />
             </div>
           </div>
