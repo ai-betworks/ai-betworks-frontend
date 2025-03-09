@@ -1,17 +1,22 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { ColorPicker } from "@/components/ui/color-picker";
+import { useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
-  DialogHeader,
-  DialogTitle,
   DialogTrigger,
+  DialogTitle,
+  DialogHeader,
 } from "@/components/ui/dialog";
+import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ColorPicker } from "@/components/ui/color-picker";
+import { readContract } from "viem/actions";
 import {
   Select,
   SelectContent,
@@ -19,17 +24,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
-import { SupportedChains } from "@/lib/consts";
 import { coreAbi } from "@/lib/contract.types";
+import { useAccount, usePublicClient, useWriteContract, useWalletClient } from "wagmi";
 import { Database } from "@/lib/database.types";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useEffect, useState } from "react";
 import { formatEther } from "viem";
-import { base } from "viem/chains";
-import { useAccount, usePublicClient, useWalletClient } from "wagmi";
-import { NetworkSelector } from "./NetworkSelector";
-// import { wagmiConfig, walletClient } from "@/components/wrapper/wrapper";
 
 // Helper function to generate a random hex color.
 const generateRandomColor = (includeHash = false) => {
@@ -39,17 +37,14 @@ const generateRandomColor = (includeHash = false) => {
   return includeHash ? `#${randomColor}` : randomColor;
 };
 
-// Increase total steps to 8:
-// 0: Method Selection, 1: Basic Info, 2: Platform, 3: Model Settings,
-// 4: Character Card, 5: JSON Preview, 6: Network Selection, 7: Confirmation.
-const totalSteps = 8;
+// Increase total steps to 7:
+const totalSteps = 7;
 
 export default function CreateAgentModal() {
   const publicClient = usePublicClient();
   const { data: walletClient } = useWalletClient();
   const [step, setStep] = useState(0);
   const [open, setOpen] = useState(false);
-  const [chain, setChain] = useState<SupportedChains>(base);
   const [agentData, setAgentData] = useState({
     imageUrl: "",
     color: "",
@@ -72,10 +67,8 @@ export default function CreateAgentModal() {
   });
   const { address: userAddress } = useAccount();
 
-  // New state to hold fees from the contract (assumed to be an array of BigInts)
   const [fees, setFees] = useState<any>(null);
 
-  // Helper function to update platform and prepopulate the endpoint
   const updatePlatform = (platform: string) => {
     let endpoint = "";
     if (platform === "Local") {
@@ -114,7 +107,6 @@ export default function CreateAgentModal() {
   const nextStep = () => setStep((prev) => Math.min(prev + 1, totalSteps - 1));
   const prevStep = () => setStep((prev) => Math.max(prev - 1, 0));
 
-  // Update step titles for 8 steps.
   const getStepTitle = () => {
     const stepTitles = [
       "How do you want to create your agent?",
@@ -123,7 +115,6 @@ export default function CreateAgentModal() {
       "Model Settings",
       "Character Card",
       "Review JSON",
-      "Select Network",
       "Confirmation",
     ];
     return (
@@ -145,7 +136,6 @@ export default function CreateAgentModal() {
     );
   };
 
-  // Fetch fees from the contract
   const getFees = async () => {
     if (!publicClient) {
       console.error("Public client not found");
@@ -166,31 +156,29 @@ export default function CreateAgentModal() {
 
   useEffect(() => {
     if (!publicClient) return;
-
+    
     getFees()
       .then((result) => {
         setFees(result);
       })
       .catch((error) => console.error("Error in getFees useEffect:", error));
-  }, [publicClient]); // Add publicClient to dependency array
+  }, [publicClient]);
 
-  // In the agent flow, first perform the deposit call, then send a backend request.
   const handleSubmit = async () => {
     try {
       if (!publicClient) {
         throw new Error("Public client not available");
       }
-
+      
       if (fees && userAddress && walletClient) {
         const { request } = await publicClient.simulateContract({
           abi: coreAbi,
           address: process.env.NEXT_PUBLIC_CORE_ADDRESS as `0x${string}`,
           functionName: "deposit",
-          value: fees[0], // Assuming fees[0] is the deposit amount as BigInt
+          value: fees[0],
           account: userAddress,
-          chain: chain, // Use the selected chain
         });
-
+        
         if (!walletClient) {
           throw new Error("Wallet client not available");
         }
@@ -202,7 +190,7 @@ export default function CreateAgentModal() {
       }
     } catch (error) {
       console.error("Error during deposit:", error);
-      return; // Exit if deposit fails.
+      return;
     }
 
     const payload: Database["public"]["Tables"]["agents"]["Insert"] = {
@@ -220,8 +208,6 @@ export default function CreateAgentModal() {
       character_card: JSON.stringify(agentData.characterCard),
       earnings: 0,
       creator_id: 1,
-      // Optionally include deposit transaction hash if needed:
-      // deposit_transaction_hash: depositTxHash,
     };
 
     try {
@@ -231,7 +217,7 @@ export default function CreateAgentModal() {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "X-Authorization-Signature": "mock_signature", // Replace with real signature if needed.
+            "X-Authorization-Signature": "mock_signature",
           },
           body: JSON.stringify(payload),
         }
@@ -241,14 +227,11 @@ export default function CreateAgentModal() {
       console.log("Agent created successfully:", data);
       setOpen(false);
       setStep(0);
-      // Optionally refresh the page:
-      // window.location.reload();
     } catch (error) {
       console.error("Error creating agent:", error);
     }
   };
 
-  // Function to render JSON preview (Review JSON step)
   const renderJsonPreview = () => (
     <div className="space-y-4">
       <p className="text-gray-400">
@@ -262,12 +245,6 @@ export default function CreateAgentModal() {
     </div>
   );
 
-  // Network selection view
-  const renderNetworkSelection = () => (
-    <NetworkSelector selectedChain={chain} onChainSelect={setChain} />
-  );
-
-  // Updated confirmation view to use the selected chain's token symbol
   const renderConfirmation = () => (
     <div className="flex flex-col gap-6">
       <div className="p-4 text-foreground rounded-lg border-2 border-gray-400 flex flex-col gap-2 text-center">
@@ -275,8 +252,7 @@ export default function CreateAgentModal() {
           Creating this agent will cost
         </div>
         <div className="text-foreground text-xl">
-          {fees ? formatEther(fees[1]) : "Loading..."}{" "}
-          {chain.nativeCurrency.symbol}
+          {fees ? formatEther(fees[1]) : "Loading..."} ETH
         </div>
         <div className="text-sm text-muted-foreground">
           2% of all fees generated will go to you.
@@ -330,6 +306,7 @@ export default function CreateAgentModal() {
                 onChange={handleCharacterCardChange}
                 placeholder="Agent Name"
                 className="bg-muted"
+                required
               />
             </div>
             <div className="space-y-2">
@@ -340,6 +317,7 @@ export default function CreateAgentModal() {
                 onChange={handleChange}
                 placeholder="https://example.com/image.png"
                 className="bg-muted"
+                required
               />
             </div>
             <div className="space-y-2">
@@ -350,6 +328,7 @@ export default function CreateAgentModal() {
                 onChange={handleChange}
                 placeholder="A short description..."
                 className="bg-muted"
+                required
               />
             </div>
             <div className="space-y-2">
@@ -360,6 +339,9 @@ export default function CreateAgentModal() {
                 onChange={handleChange}
                 placeholder="0x..."
                 className="bg-muted"
+                required
+                pattern="^0x[a-fA-F0-9]{40}$"
+                title="Must be a valid Ethereum address"
               />
             </div>
             <div>
@@ -382,6 +364,7 @@ export default function CreateAgentModal() {
               <Select
                 value={agentData.platform}
                 onValueChange={(value) => updatePlatform(value)}
+                required
               >
                 <SelectTrigger className="bg-muted">
                   <SelectValue placeholder="Select Platform" />
@@ -401,6 +384,7 @@ export default function CreateAgentModal() {
                 onChange={handleChange}
                 placeholder="API Endpoint"
                 className="bg-muted"
+                required
               />
             </div>
           </div>
@@ -421,6 +405,7 @@ export default function CreateAgentModal() {
                     },
                   })
                 }
+                required
               >
                 <SelectTrigger className="bg-muted">
                   <SelectValue placeholder="Select model provider" />
@@ -437,8 +422,7 @@ export default function CreateAgentModal() {
               <Input
                 name="model"
                 value={agentData.characterCard.model}
-                onChange={handleCharacterCardChange}
-                placeholder="Enter model name"
+                readOnly
                 className="bg-muted"
               />
             </div>
@@ -455,6 +439,7 @@ export default function CreateAgentModal() {
                 onChange={handleCharacterCardChange}
                 placeholder="System Behavior"
                 className="bg-muted"
+                required
               />
             </div>
             <div className="space-y-2">
@@ -465,6 +450,7 @@ export default function CreateAgentModal() {
                 onChange={handleCharacterCardChange}
                 placeholder="Character bio"
                 className="bg-muted"
+                required
               />
             </div>
             <div className="space-y-2">
@@ -475,6 +461,7 @@ export default function CreateAgentModal() {
                 onChange={handleCharacterCardChange}
                 placeholder="Character lore"
                 className="bg-muted"
+                required
               />
             </div>
             <div className="space-y-2">
@@ -485,6 +472,7 @@ export default function CreateAgentModal() {
                 onChange={handleCharacterCardChange}
                 placeholder="Character knowledge"
                 className="bg-muted"
+                required
               />
             </div>
             <div className="space-y-2">
@@ -495,6 +483,7 @@ export default function CreateAgentModal() {
                 onChange={handleCharacterCardChange}
                 placeholder="Adjectives"
                 className="bg-muted"
+                required
               />
             </div>
             <div className="space-y-2">
@@ -505,6 +494,7 @@ export default function CreateAgentModal() {
                 onChange={handleCharacterCardChange}
                 placeholder="Message examples"
                 className="bg-muted"
+                required
               />
             </div>
             <div className="space-y-2">
@@ -515,6 +505,7 @@ export default function CreateAgentModal() {
                 onChange={handleCharacterCardChange}
                 placeholder="Post examples"
                 className="bg-muted"
+                required
               />
             </div>
           </div>
@@ -522,8 +513,6 @@ export default function CreateAgentModal() {
       case 5:
         return renderJsonPreview();
       case 6:
-        return renderNetworkSelection();
-      case 7:
         return renderConfirmation();
       default:
         return null;

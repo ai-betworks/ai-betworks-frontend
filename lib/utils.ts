@@ -82,7 +82,12 @@ export interface ChainMetadata {
   family: "EVM" | "Solana";
   nativeSymbol: string;
   primaryColor?: string;
+  contractAddress?: `0x${string}`;
 }
+
+const BASE_SEPOLIA_APPLICATION_CONTRACT_ADDRESS="0x9b6eA75cA1c0dA7693404CB804E2e56753A36e40"
+const SONIC_BLAZE_APPLICATION_CONTRACT_ADDRESS="0xbf9a9a4220102593296bcdff9c8e5feeeec853f1"
+const SCROLL_SEPOLIA_APPLICATION_CONTRACT_ADDRESS="0x68fccd874266afccc047408ca607c725365e7a0d"
 
 export const chainMetadata: Record<number, ChainMetadata> = {
   84532: {
@@ -93,6 +98,7 @@ export const chainMetadata: Record<number, ChainMetadata> = {
     family: "EVM",
     nativeSymbol: "ETH",
     primaryColor: "#0052FF",
+    contractAddress: BASE_SEPOLIA_APPLICATION_CONTRACT_ADDRESS,
   },
   8453: {
     id: 8453,
@@ -102,6 +108,7 @@ export const chainMetadata: Record<number, ChainMetadata> = {
     family: "EVM",
     nativeSymbol: "ETH",
     primaryColor: "#0052FF",
+    contractAddress: BASE_SEPOLIA_APPLICATION_CONTRACT_ADDRESS,
   },
   421614: {
     id: 421614,
@@ -110,6 +117,7 @@ export const chainMetadata: Record<number, ChainMetadata> = {
     iconFull: arbitrumFullIcon.src,
     family: "EVM",
     nativeSymbol: "ETH",
+    primaryColor: "#2D3748",
   },
   0: {
     id: 0,
@@ -160,6 +168,7 @@ export const chainMetadata: Record<number, ChainMetadata> = {
     nativeSymbol: "S",
     primaryColor: "#F5F5F5",
     // primaryColor: "#141416",
+    contractAddress: SONIC_BLAZE_APPLICATION_CONTRACT_ADDRESS,
   },
   57054: {
     id: 57054,
@@ -169,6 +178,7 @@ export const chainMetadata: Record<number, ChainMetadata> = {
     family: "EVM",
     nativeSymbol: "S",
     primaryColor: "#F5F5F5",
+    contractAddress: SONIC_BLAZE_APPLICATION_CONTRACT_ADDRESS,
   },
   534352: {
     id: 534352,
@@ -177,6 +187,7 @@ export const chainMetadata: Record<number, ChainMetadata> = {
     iconFull: scrollFullIcon.src,
     family: "EVM",
     nativeSymbol: "ETH",
+    contractAddress: SCROLL_SEPOLIA_APPLICATION_CONTRACT_ADDRESS,
   },
   534351: {
     id: 534351,
@@ -185,6 +196,7 @@ export const chainMetadata: Record<number, ChainMetadata> = {
     iconFull: scrollFullIcon.src,
     family: "EVM",
     nativeSymbol: "ETH",
+    contractAddress: SCROLL_SEPOLIA_APPLICATION_CONTRACT_ADDRESS,
   },
 } as const;
 

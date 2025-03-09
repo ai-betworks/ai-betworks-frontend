@@ -8,17 +8,21 @@ import supabase from "@/lib/config";
 import { SupportedChains } from "@/lib/consts";
 import { coreAbi } from "@/lib/contract.types";
 import { Tables } from "@/lib/database.types";
-import { cn, generateRandomColor, getChainMetadata } from "@/lib/utils";
+import {
+  cn,
+  generateRandomColor,
+  getChainMetadata,
+} from "@/lib/utils";
 import { OnchainKitProvider } from "@coinbase/onchainkit";
 import { getTokens } from "@coinbase/onchainkit/api";
 import { Token, TokenImage } from "@coinbase/onchainkit/token";
 import { useEffect, useState } from "react";
-import { formatEther, getAddress } from "viem";
-import { avalancheFuji, base } from "viem/chains";
-import { useAccount, useContractWrite, usePublicClient } from "wagmi";
+import { createPublicClient, formatEther, getAddress, http } from "viem";
+import { useAccount, useContractWrite } from "wagmi";
 import { AgentAvatar } from "./AgentAvatar";
 import { NetworkSelector } from "./NetworkSelector";
 import { PvPRuleCard } from "./PvPRuleCard";
+import { base } from "viem/chains";
 
 type PvPRule =
   | "SILENCE"
@@ -63,7 +67,6 @@ export function CreateRoomModal({
   onOpenChange,
   initialState,
 }: CreateRoomModalProps) {
-  const publicClient = usePublicClient();
   const { writeContract } = useContractWrite();
   const [createRoomFormState, setCreateRoomFormState] =
     useState<CreateRoomState>(
@@ -87,6 +90,7 @@ export function CreateRoomModal({
         selectedAgents: [],
       }
     );
+  const [publicClient, setPublicClient] = useState<any>(null);
 
   const [roomTypes, setRoomTypes] = useState<Tables<"room_types">[]>([]);
   const [loadingRoomTypes, setLoadingRoomTypes] = useState(true);
@@ -94,7 +98,7 @@ export function CreateRoomModal({
   const [searchAgentQuery, setSearchAgentQuery] = useState("");
   const [tokenSearchQuery, setTokenSearchQuery] = useState("");
   const [loadingAgents, setLoadingAgents] = useState(true);
-  const [chain, setChain] = useState<SupportedChains>(avalancheFuji);
+  const [chain, setChain] = useState<SupportedChains | undefined>(undefined);
   const [settings, setSettings] = useState<RoomSettings>(
     createRoomFormState.settings || {
       name: "",
@@ -146,6 +150,24 @@ export function CreateRoomModal({
       });
   }, []);
 
+  useEffect(() => {
+    if (createRoomFormState.chain) {
+      console.log(
+        `🔗 Setting up publicClient for chain: ${createRoomFormState.chain.name}`
+      );
+
+      const newClient = createPublicClient({
+        chain: createRoomFormState.chain,
+        transport: http(process.env.NEXT_PUBLIC_RPC_URL),
+        batch: {
+          multicall: true,
+        },
+      });
+
+      setPublicClient(newClient);
+    }
+  }, [createRoomFormState.chain]);
+
   // Load token info
   useEffect(() => {
     const loadTokenInfo = async (address: string) => {
@@ -174,26 +196,48 @@ export function CreateRoomModal({
       console.log("No public client found in create room modal");
       return;
     }
+
+    if (!createRoomFormState.chain) {
+      console.error("No chain selected while fetching fees.");
+      return;
+    }
+
+    const chainId = createRoomFormState.chain.id;
+    const contractAddress = getChainMetadata(chainId)?.contractAddress;
+
+    if (!contractAddress) {
+      console.error(`No contract address found for chain ID: ${chainId}`);
+      return;
+    }
+
     try {
+      console.log(
+        `🔍 Fetching fees from: ${contractAddress} on chain ${chainId}`
+      );
+
       const result = await publicClient.readContract({
         abi: coreAbi,
-        address: process.env.NEXT_PUBLIC_CORE_ADDRESS as `0x${string}`,
+        address: contractAddress as `0x${string}`,
         functionName: "getFees",
       });
+
+      console.log(`✅ Fees retrieved:`, result);
       return result;
-    } catch (error) {
-      console.error("Error fetching fees:", error);
+    } catch (error: any) {
+      console.error(
+        `🚨 Error fetching fees for chain ${chainId}:`,
+        error.message
+      );
       return null;
     }
   };
-
   useEffect(() => {
-    getFees()
-      .then((result) => {
-        setFees(result);
-      })
-      .catch((error) => console.error("Error in getFees useEffect:", error));
-  }, []);
+    if (publicClient) {
+      getFees()
+        .then((result) => setFees(result))
+        .catch((error) => console.error("Error in getFees useEffect:", error));
+    }
+  }, [publicClient]);
 
   const handleCreateRoom = async () => {
     if (!createRoomFormState.settings) return;
@@ -203,7 +247,7 @@ export function CreateRoomModal({
       );
       return;
     }
-    const chainMeta = getChainMetadata(chain.id);
+    const chainMeta = getChainMetadata(chain?.id || 0);
     const roundEndsOn = new Date(
       Date.now() + createRoomFormState.settings.round_time * 1000
     ).toISOString();
@@ -238,7 +282,7 @@ export function CreateRoomModal({
         ? createRoomFormState.settings.image_url
         : "https://example.com/default-room.png",
       color: createRoomFormState.settings.color,
-      chain_id: String(chain.id),
+      chain_id: String(chain?.id),
       chain_family: chainMeta.family,
       contract_address: "0x1234...", // Replace with actual contract address if needed.
       round_time: createRoomFormState.settings.round_time,
@@ -342,7 +386,13 @@ export function CreateRoomModal({
   };
 
   const renderChainSelection = () => (
-    <NetworkSelector selectedChain={chain} onChainSelect={setChain} />
+    <NetworkSelector
+      selectedChain={chain}
+      onChainSelect={(selectedChain) => {
+        setCreateRoomFormState((s) => ({ ...s, chain: selectedChain }));
+        setChain(selectedChain); // ✅ Ensure state updates properly
+      }}
+    />
   );
 
   const renderAgentSelection = () => {
@@ -727,7 +777,7 @@ export function CreateRoomModal({
         </div>
         <div className="text-foreground text-xl">
           {fees ? formatEther(fees[1]) : "Loading..."}{" "}
-          {chain.nativeCurrency.symbol}
+          {chain?.nativeCurrency.symbol}
         </div>
         <div className="text-sm text-muted-foreground">
           2% of all fees generated in room will go to you
@@ -741,7 +791,8 @@ export function CreateRoomModal({
       case 2:
         return !!createRoomFormState.roomType;
       case 3:
-        return !!chain;
+      case 3:
+        return createRoomFormState.chain !== undefined;
       case 4:
         return createRoomFormState.selectedAgents.length > 0;
       case 5:
