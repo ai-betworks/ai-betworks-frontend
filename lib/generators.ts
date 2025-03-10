@@ -1,5 +1,7 @@
-//TODO Deprecate this file
-import { AgentChatMessage } from "@/stories/AgentChat";
+/**
+ * @deprecated This file is deprecated and will be removed in a future release.
+ * Please use the appropriate data fetching methods or mock data utilities instead.
+ */
 import { faker } from "@faker-js/faker";
 import { Database } from "./database.types";
 
@@ -8,6 +10,16 @@ type Agent = Database["public"]["Tables"]["agents"]["Row"];
 type Room = Database["public"]["Tables"]["rooms"]["Row"];
 type RoomType = Database["public"]["Tables"]["room_types"]["Row"];
 type User = Database["public"]["Tables"]["users"]["Row"];
+
+// Define the AgentChatMessage type that was previously imported
+export interface AgentChatMessage {
+  agentName: string;
+  agentImageUrl: string;
+  agentBorderColor: string;
+  message: string;
+  sentiment?: "Positive" | "Negative" | "Neutral";
+  additionalIcons?: string[];
+}
 
 // Generator for Agent
 export const generateAgent = (overrides: Partial<Agent> = {}): Agent => ({
@@ -26,6 +38,9 @@ export const generateAgent = (overrides: Partial<Agent> = {}): Agent => ({
   character_card: faker.lorem.paragraph(),
   single_sentence_summary: faker.lorem.sentence(),
   color: faker.color.rgb(),
+  earnings: null,
+  type: "AI",
+  uuid: null,
   ...overrides,
 });
 
@@ -35,40 +50,45 @@ export const generateUser = (overrides: Partial<User> = {}): User => ({
   created_at: faker.date.recent().toISOString(),
   updated_at: faker.date.recent().toISOString(),
   address: faker.finance.ethereumAddress(),
-  chain_id: faker.helpers.arrayElement([1, 137, 42161]),
+  chain_id: faker.helpers.arrayElement(["1", "137", "42161"]), // Fixed: Using string instead of number
   display_name: faker.internet.userName(),
   ...overrides,
 });
 
 // Generator for Room
-export const generateRoom = (overrides: Partial<Room> = {}): Room => ({
-  id: faker.number.int({ min: 1, max: 10000 }),
-  created_at: faker.date.recent().toISOString(),
-  updated_at: faker.date.recent().toISOString(),
-  name: faker.company.name(),
-  creator_id: faker.number.int({ min: 1, max: 10000 }),
-  type_id: faker.number.int({ min: 1, max: 10 }),
-  chain_family: faker.helpers.arrayElement(["evm", "solana"]),
-  chain_id: faker.number.int({ min: 1, max: 42161 }),
-  contract_address: faker.finance.ethereumAddress(),
-  image_url: faker.image.url(),
-  color: faker.color.rgb(),
-  active: true,
-  round_time: faker.number.int({ min: 300, max: 900 }), // 5-15 minutes
-  round_ends_on: faker.date.soon().toISOString(),
-  game_master_id:
-    faker.helpers.maybe(() => faker.number.int({ min: 1, max: 10000 })) ?? null,
-  room_config: {
-    room_config: {},
-    pvp: {
-      enabled: true,
-      allowed_functions: ["DEAFEN", "POISON"],
+export const generateRoom = (overrides: Partial<Room> = {}): Room => {
+  // Create a base room without the problematic property
+  const baseRoom: Partial<Room> = {
+    id: faker.number.int({ min: 1, max: 10000 }),
+    created_at: faker.date.recent().toISOString(),
+    updated_at: faker.date.recent().toISOString(),
+    name: faker.company.name(),
+    creator_id: faker.number.int({ min: 1, max: 10000 }),
+    type_id: faker.number.int({ min: 1, max: 10 }),
+    chain_family: faker.helpers.arrayElement(["evm", "solana"]),
+    chain_id: faker.number.int({ min: 1, max: 42161 }),
+    contract_address: faker.finance.ethereumAddress(),
+    image_url: faker.image.url(),
+    color: faker.color.rgb(),
+    active: true,
+    game_master_id:
+      faker.helpers.maybe(() => faker.number.int({ min: 1, max: 10000 })) ??
+      null,
+    room_config: {
+      room_config: {},
+      pvp: {
+        enabled: true,
+        allowed_functions: ["DEAFEN", "POISON"],
+      },
     },
-  },
-  game_master_action_log: null,
-  pvp_action_log: null,
-  ...overrides,
-});
+    game_master_action_log: null,
+    pvp_action_log: null,
+    participants: faker.number.int({ min: 1, max: 20 }),
+  };
+
+  // Merge with overrides and return as Room
+  return { ...baseRoom, ...overrides } as Room;
+};
 
 // Generator for RoomType
 export const generateRoomType = (

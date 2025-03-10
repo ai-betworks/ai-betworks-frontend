@@ -1,27 +1,27 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useParams } from "next/navigation";
-import supabase from "@/lib/config";
+import Loader from "@/components/loader";
+import AnimatedBackground from "@/components/ui/animated-tabs";
 import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { AgentAvatar } from "@/stories/AgentAvatar";
-import Loader from "@/components/loader";
-import { formatDistanceToNow } from "date-fns";
-import { Copy } from "lucide-react";
-import AnimatedBackground from "@/components/ui/animated-tabs";
 import {
   Table,
   TableBody,
+  TableCell,
   TableHead,
   TableHeader,
   TableRow,
-  TableCell,
 } from "@/components/ui/table";
+import supabase from "@/lib/config";
 import { Database } from "@/lib/database.types";
-import Image from "next/image";
 import { chainMetadata } from "@/lib/utils";
+import { AgentAvatar } from "@/stories/AgentAvatar";
 import { roomTypeMapping } from "@/stories/RoomTable";
+import { formatDistanceToNow } from "date-fns";
+import { Copy } from "lucide-react";
+import Image from "next/image";
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export type Room = Database["public"]["Tables"]["rooms"]["Row"];
 export type Agent = Database["public"]["Tables"]["agents"]["Row"];
@@ -38,27 +38,19 @@ export default function AgentSummary() {
   const [roomsLoading, setRoomsLoading] = useState(false);
   const [error, setError] = useState("");
 
+  // Handle view change with null check
+  const handleViewChange = (value: string | null) => {
+    if (value) {
+      setSelectedView(value);
+    }
+  };
+
   // Fetch agent data
   useEffect(() => {
     const fetchAgent = async () => {
       const { data, error } = await supabase
         .from("agents")
-        .select(
-          `
-          id,
-          image_url,
-          color,
-          display_name,
-          single_sentence_summary,
-          platform,
-          endpoint,
-          status,
-          type,
-          earnings,
-          character_card,
-          last_health_check
-        `
-        )
+        .select("*")
         .eq("id", Number(id))
         .single();
 
@@ -152,7 +144,7 @@ export default function AgentSummary() {
           <AnimatedBackground
             className="bg-secondary/50 rounded-md"
             defaultValue={selectedView}
-            onValueChange={setSelectedView}
+            onValueChange={handleViewChange}
           >
             {viewOptions.map((option) => (
               <button

@@ -29,3 +29,22 @@ export type SupportedChains =
   | typeof scroll
   | typeof sonicBlazeTestnet
   | typeof sonic;
+
+export type RoomTypeName =
+  | "Buy / Hold / Sell"
+  | "Long / Short"
+  | "Just Chat"
+  | "All";
+
+export const ROOM_TYPES: RoomTypeName[] = [
+  "All",
+  "Buy / Hold / Sell",
+  "Long / Short",
+  "Just Chat",
+];
+
+export const ROOM_TYPE_MAPPING: { [key: number]: RoomTypeName } = {
+  1: "Buy / Hold / Sell",
+  2: "Long / Short",
+  3: "Just Chat",
+};

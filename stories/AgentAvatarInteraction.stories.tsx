@@ -28,23 +28,19 @@ const mockRoomData = {
   updated_at: new Date().toISOString(),
   active: true,
   name: "Test Room",
-  description: "Test Description",
+  chain_family: "ethereum",
+  chain_id: 1,
+  color: "#FF7B00",
+  contract_address: "0x123456789",
+  creator_id: 1,
+  game_master_action_log: null,
+  game_master_id: null,
   image_url: "",
-  entry_amount: 1,
-  min_players: 2,
-  max_players: 10,
-  start_time: new Date().toISOString(),
-  end_time: new Date().toISOString(),
-  status: "active",
-  winner_id: null,
-  prize_pool: 0,
-  game_type: "standard",
-  creator_id: "test-creator",
-  current_price: 0,
-  initial_price: 0,
-  price_history: [],
-  room_type: "public",
-} as const;
+  participants: 5,
+  pvp_action_log: null,
+  room_config: null,
+  type_id: 1,
+};
 
 const baseArgs = {
   name: "Agent Smith",
@@ -53,6 +49,8 @@ const baseArgs = {
   betAmount: 0,
   agentAddress: "0x123...789",
   roomData: mockRoomData,
+  isRoundTimerExpired: false,
+  pvpStatuses: [],
 };
 
 export const WithImage: Story = {

@@ -1,3 +1,4 @@
+import { WsMessageTypes } from "@/lib/backend.types";
 import { Tables } from "@/lib/database.types";
 import type { Meta, StoryObj } from "@storybook/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -32,6 +33,7 @@ const mockAgents: Tables<"agents">[] = [
     single_sentence_summary: null,
     sol_wallet_address: null,
     last_health_check: null,
+    uuid: null,
   },
   {
     id: 56,
@@ -51,6 +53,7 @@ const mockAgents: Tables<"agents">[] = [
     single_sentence_summary: null,
     sol_wallet_address: null,
     last_health_check: null,
+    uuid: null,
   },
   {
     id: 57,
@@ -70,6 +73,7 @@ const mockAgents: Tables<"agents">[] = [
     single_sentence_summary: null,
     sol_wallet_address: null,
     last_health_check: null,
+    uuid: null,
   },
 ];
 
@@ -103,23 +107,52 @@ type Story = StoryObj<typeof AgentMessageChatLine>;
 export const Default: Story = {
   args: {
     message: {
-      messageType: "agent_message",
+      messageType: WsMessageTypes.AGENT_MESSAGE,
       content: {
         timestamp: Date.now(),
         roomId: 1,
         roundId: 1,
         senderId: 58, // This is the primary agent now
-        originalMessages: [
-          {
+        originalMessage: {
+          messageType: WsMessageTypes.AGENT_MESSAGE,
+          signature: "0x...",
+          sender: "0x0",
+          content: {
+            timestamp: Date.now(),
+            roomId: 1,
+            roundId: 1,
             agentId: 56,
-            message: "Hello! This is a test message from an AI agent.",
+            text: "Hello! This is a test message from an AI agent.",
           },
-          {
-            agentId: 57, // Additional message from another agent
-            message: "And I'm joining in too!",
+        },
+        originalTargets: [56, 57],
+        currentBlockTimestamp: Date.now(),
+        postPvpMessages: {
+          "56": {
+            messageType: WsMessageTypes.AGENT_MESSAGE,
+            signature: "0x...",
+            sender: "0x0",
+            content: {
+              timestamp: Date.now(),
+              roomId: 1,
+              roundId: 1,
+              agentId: 56,
+              text: "Hello! This is a test message from an AI agent.",
+            },
           },
-        ],
-        postPvpMessages: [],
+          "57": {
+            messageType: WsMessageTypes.AGENT_MESSAGE,
+            signature: "0x...",
+            sender: "0x0",
+            content: {
+              timestamp: Date.now(),
+              roomId: 1,
+              roundId: 1,
+              agentId: 57,
+              text: "And I'm joining in too!",
+            },
+          },
+        },
         pvpStatusEffects: {},
       },
     },
@@ -130,14 +163,27 @@ export const Default: Story = {
 export const EmptyMessage: Story = {
   args: {
     message: {
-      messageType: "agent_message",
+      messageType: WsMessageTypes.AGENT_MESSAGE,
       content: {
         timestamp: Date.now(),
         roomId: 1,
         roundId: 1,
         senderId: 58,
-        originalMessages: [], // This will trigger the funny empty message
-        postPvpMessages: [],
+        originalMessage: {
+          messageType: WsMessageTypes.AGENT_MESSAGE,
+          signature: "0x...",
+          sender: "0x0",
+          content: {
+            timestamp: Date.now(),
+            roomId: 1,
+            roundId: 1,
+            agentId: 58,
+            text: "", // Empty message will trigger the funny empty message
+          },
+        },
+        originalTargets: [],
+        currentBlockTimestamp: Date.now(),
+        postPvpMessages: {},
         pvpStatusEffects: {},
       },
     },
@@ -149,23 +195,52 @@ export const EmptyMessage: Story = {
 export const MultipleAgents: Story = {
   args: {
     message: {
-      messageType: "agent_message",
+      messageType: WsMessageTypes.AGENT_MESSAGE,
       content: {
         timestamp: Date.now(),
         roomId: 1,
         roundId: 1,
         senderId: 58,
-        originalMessages: [
-          {
-            agentId: 56,
-            message: "We're all here together!",
+        originalMessage: {
+          messageType: WsMessageTypes.AGENT_MESSAGE,
+          signature: "0x...",
+          sender: "0x0",
+          content: {
+            timestamp: Date.now(),
+            roomId: 1,
+            roundId: 1,
+            agentId: 58,
+            text: "We're all here together!",
           },
-          {
-            agentId: 57,
-            message: "Indeed we are!",
+        },
+        originalTargets: [56, 57],
+        currentBlockTimestamp: Date.now(),
+        postPvpMessages: {
+          "56": {
+            messageType: WsMessageTypes.AGENT_MESSAGE,
+            signature: "0x...",
+            sender: "0x0",
+            content: {
+              timestamp: Date.now(),
+              roomId: 1,
+              roundId: 1,
+              agentId: 56,
+              text: "We're all here together!",
+            },
           },
-        ],
-        postPvpMessages: [],
+          "57": {
+            messageType: WsMessageTypes.AGENT_MESSAGE,
+            signature: "0x...",
+            sender: "0x0",
+            content: {
+              timestamp: Date.now(),
+              roomId: 1,
+              roundId: 1,
+              agentId: 57,
+              text: "Indeed we are!",
+            },
+          },
+        },
         pvpStatusEffects: {},
       },
     },

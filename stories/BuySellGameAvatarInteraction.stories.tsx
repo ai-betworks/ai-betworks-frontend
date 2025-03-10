@@ -1,3 +1,4 @@
+import { Json } from "@/lib/database.types";
 import type { Meta, StoryObj } from "@storybook/react";
 import { BuySellGameAvatarInteraction } from "./BuySellGameAvatarInteraction";
 import demoImage from "./assets/demo-personalities/godzilla.jpg";
@@ -23,19 +24,45 @@ const meta: Meta<typeof BuySellGameAvatarInteraction> = {
 export default meta;
 type Story = StoryObj<typeof BuySellGameAvatarInteraction>;
 
+// Mock room data for Storybook
+const mockRoomData = {
+  id: 1,
+  created_at: new Date().toISOString(),
+  updated_at: new Date().toISOString(),
+  name: "Demo Room",
+  active: true,
+  chain_family: "ethereum",
+  chain_id: 1,
+  color: "#FF7B00",
+  contract_address: "0x1234567890abcdef1234567890abcdef12345678",
+  creator_id: 1,
+  game_master_action_log: null as Json,
+  game_master_id: null,
+  image_url: null,
+  participants: 0,
+  pvp_action_log: null as Json,
+  room_config: null as Json,
+  type_id: 1,
+};
+
 const baseArgs = {
-  id: "agent1",
+  id: 1, // Changed from string to number to match the interface
   name: "Agent Smith",
   borderColor: "#FF7B00",
   imageUrl: demoImage.src,
   betAmount: 0,
+  address: "0x1234567890abcdef1234567890abcdef12345678", // Added required prop
+  roomData: mockRoomData, // Added required prop
+  pvpStatuses: [], // Added required prop
+  isRoundTimerExpired: false, // Added required prop
+  hold: 0, // Added missing prop
 };
 
 export const FullVariantRandomValues: Story = {
   args: {
     ...baseArgs,
-    bearAmount: 60,
-    bullAmount: 40,
+    sell: 60, // Changed from bearAmount to sell
+    buy: 40, // Changed from bullAmount to buy
     variant: "full",
   },
 };
@@ -43,8 +70,8 @@ export const FullVariantRandomValues: Story = {
 export const FullVariantWithoutName: Story = {
   args: {
     ...baseArgs,
-    bearAmount: 60,
-    bullAmount: 40,
+    sell: 60, // Changed from bearAmount to sell
+    buy: 40, // Changed from bullAmount to buy
     variant: "full",
     showName: false,
   },
@@ -53,8 +80,8 @@ export const FullVariantWithoutName: Story = {
 export const SlimVariantRandomValues: Story = {
   args: {
     ...baseArgs,
-    bearAmount: 60,
-    bullAmount: 40,
+    sell: 60, // Changed from bearAmount to sell
+    buy: 40, // Changed from bullAmount to buy
     variant: "slim",
   },
 };
@@ -62,8 +89,8 @@ export const SlimVariantRandomValues: Story = {
 export const SlimVariantWithoutName: Story = {
   args: {
     ...baseArgs,
-    bearAmount: 60,
-    bullAmount: 40,
+    sell: 60, // Changed from bearAmount to sell
+    buy: 40, // Changed from bullAmount to buy
     variant: "slim",
     showName: false,
   },
@@ -72,8 +99,8 @@ export const SlimVariantWithoutName: Story = {
 export const FullVariantNoBear: Story = {
   args: {
     ...baseArgs,
-    bearAmount: 0,
-    bullAmount: 100,
+    sell: 0, // Changed from bearAmount to sell
+    buy: 100, // Changed from bullAmount to buy
     variant: "full",
   },
 };
@@ -81,8 +108,8 @@ export const FullVariantNoBear: Story = {
 export const SlimVariantNoBear: Story = {
   args: {
     ...baseArgs,
-    bearAmount: 0,
-    bullAmount: 100,
+    sell: 0, // Changed from bearAmount to sell
+    buy: 100, // Changed from bullAmount to buy
     variant: "slim",
   },
 };
@@ -90,8 +117,8 @@ export const SlimVariantNoBear: Story = {
 export const FullVariantNoBull: Story = {
   args: {
     ...baseArgs,
-    bearAmount: 100,
-    bullAmount: 0,
+    sell: 100, // Changed from bearAmount to sell
+    buy: 0, // Changed from bullAmount to buy
     variant: "full",
   },
 };
@@ -99,8 +126,8 @@ export const FullVariantNoBull: Story = {
 export const SlimVariantNoBull: Story = {
   args: {
     ...baseArgs,
-    bearAmount: 100,
-    bullAmount: 0,
+    sell: 100, // Changed from bearAmount to sell
+    buy: 0, // Changed from bullAmount to buy
     variant: "slim",
   },
 };
@@ -108,8 +135,8 @@ export const SlimVariantNoBull: Story = {
 export const FullVariantNoAmounts: Story = {
   args: {
     ...baseArgs,
-    bearAmount: 0,
-    bullAmount: 0,
+    sell: 0, // Changed from bearAmount to sell
+    buy: 0, // Changed from bullAmount to buy
     variant: "full",
   },
 };
@@ -117,8 +144,8 @@ export const FullVariantNoAmounts: Story = {
 export const SlimVariantNoAmounts: Story = {
   args: {
     ...baseArgs,
-    bearAmount: 0,
-    bullAmount: 0,
+    sell: 0, // Changed from bearAmount to sell
+    buy: 0, // Changed from bullAmount to buy
     variant: "slim",
   },
 };
@@ -126,8 +153,8 @@ export const SlimVariantNoAmounts: Story = {
 export const WithActiveBet: Story = {
   args: {
     ...baseArgs,
-    bearAmount: 60,
-    bullAmount: 40,
+    sell: 60, // Changed from bearAmount to sell
+    buy: 40, // Changed from bullAmount to buy
     betAmount: 100,
     betType: "Sell",
     variant: "full",
@@ -137,8 +164,8 @@ export const WithActiveBet: Story = {
 export const WithActiveBetWithoutName: Story = {
   args: {
     ...baseArgs,
-    bearAmount: 60,
-    bullAmount: 40,
+    sell: 60, // Changed from bearAmount to sell
+    buy: 40, // Changed from bullAmount to buy
     betAmount: 100,
     betType: "Sell",
     variant: "full",

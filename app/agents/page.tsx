@@ -41,7 +41,7 @@ const agentCategories = ["Active", "Inactive"];
 const PAGE_SIZE = 10; // Default 10 agents per page
 
 export default function AgentsPage() {
-  const [selectedCategory, setSelectedCategory] = useState("Active");
+  const [selectedCategory, setSelectedCategory] = useState("All");
   const [agents, setAgents] = useState<Agent[]>([]);
   const [filteredAgents, setFilteredAgents] = useState<Agent[]>([]);
   const [loading, setLoading] = useState(true);
@@ -100,6 +100,13 @@ export default function AgentsPage() {
     }
   };
 
+  // Handle category change with null check
+  const handleCategoryChange = (value: string | null) => {
+    if (value) {
+      setSelectedCategory(value);
+    }
+  };
+
   return (
     <div className="space-y-8 container mx-auto py-6">
       {/* Tabs for Filtering */}
@@ -109,7 +116,7 @@ export default function AgentsPage() {
             <AnimatedBackground
               className="bg-secondary/50 rounded-md"
               defaultValue={selectedCategory}
-              onValueChange={setSelectedCategory}
+              onValueChange={handleCategoryChange}
             >
               {agentCategories.map((category) => (
                 <button

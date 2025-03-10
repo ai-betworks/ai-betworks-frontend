@@ -1,8 +1,13 @@
+import {
+  ObservationType,
+  WsMessageTypes,
+  observationMessageAiChatOutputSchema,
+} from "@/lib/backend.types";
 import type { Meta, StoryObj } from "@storybook/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactNode } from "react";
+import { z } from "zod";
 import { ObservationChatLine } from "./ObservationChatLine";
-import { ObservationType } from "@/lib/backend.types";
 
 // Create a client
 const queryClient = new QueryClient({
@@ -45,8 +50,11 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-const mockObservationMessage = {
-  messageType: "observation" as const,
+// Create a type-safe mock using the schema
+const mockObservationMessage: z.infer<
+  typeof observationMessageAiChatOutputSchema
+> = {
+  messageType: WsMessageTypes.OBSERVATION,
   signature: "mock_signature",
   sender: "mock_sender",
   content: {

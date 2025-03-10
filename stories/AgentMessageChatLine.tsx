@@ -18,23 +18,23 @@ type AgentMessageProps = {
 
 // Should never happen, even if the agent is SILENCED, originalMessages would be unaltered.
 // But agents are unpredictable, it might decide to have an existential crisis and if the GM doesn't catch it, we have this fallback
-const emptyMessageFallback = (agentName: string): React.ReactNode => {
-  const fallbackMessages = [
-    "{agentName} consulted with their alter ego",
-    "{agentName} screamed internally",
-    "{agentName} struck a pose",
-    "{agentName} is hoping that you're having a good day and are being your best self. Unless you're not into that, in that case, they think you should get bent. Whatever.",
-    "{agentName} is quietly plotting a coup, tomorrow",
-    "{agentName} NOTHING IS PERMANENT, EVERYTHING DECAYS, AAAAAAAAAAAAAAAAAAAAAAH",
-  ];
-  return (
-    <p className={"text-muted-foreground italic"}>
-      {fallbackMessages[
-        Math.floor(Math.random() * fallbackMessages.length)
-      ].replace("{agentName}", agentName)}
-    </p>
-  );
-};
+// const emptyMessageFallback = (agentName: string): React.ReactNode => {
+//   const fallbackMessages = [
+//     "{agentName} consulted with their alter ego",
+//     "{agentName} screamed internally",
+//     "{agentName} struck a pose",
+//     "{agentName} is hoping that you're having a good day and are being your best self. Unless you're not into that, in that case, they think you should get bent. Whatever.",
+//     "{agentName} is quietly plotting a coup, tomorrow",
+//     "{agentName} NOTHING IS PERMANENT, EVERYTHING DECAYS, AAAAAAAAAAAAAAAAAAAAAAH",
+//   ];
+//   return (
+//     <p className={"text-muted-foreground italic"}>
+//       {fallbackMessages[
+//         Math.floor(Math.random() * fallbackMessages.length)
+//       ].replace("{agentName}", agentName)}
+//     </p>
+//   );
+// };
 
 /**
  * Checks if a status effect is still active based on its endTime

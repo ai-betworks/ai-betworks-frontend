@@ -12,6 +12,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import supabase from "@/lib/config";
+import { ROOM_TYPES, ROOM_TYPE_MAPPING, type RoomTypeName } from "@/lib/consts";
 import type { Tables } from "@/lib/database.types";
 import { CreateRoomModal } from "@/stories/CreateRoomModal";
 import { RoomTableRow } from "@/stories/RoomTableRow";
@@ -46,25 +47,6 @@ export interface RoomWithRelations extends Room {
     } | null;
   }[];
 }
-
-export type RoomTypeName =
-  | "Buy / Hold / Sell"
-  | "Long / Short"
-  | "Just Chat"
-  | "All";
-
-const roomTypes: RoomTypeName[] = [
-  "All",
-  "Buy / Hold / Sell",
-  "Long / Short",
-  "Just Chat",
-];
-
-export const roomTypeMapping: { [key: number]: RoomTypeName } = {
-  1: "Buy / Hold / Sell",
-  2: "Long / Short",
-  3: "Just Chat",
-};
 
 const ITEMS_PER_PAGE = 10;
 
@@ -146,8 +128,8 @@ const RoomsPage: FC = () => {
   const handleTypeChange = (value: string | null) => {
     if (!value) return;
     const newType = value as RoomTypeName | "All";
-    const currentIndex = roomTypes.indexOf(selectedType);
-    const newIndex = roomTypes.indexOf(newType);
+    const currentIndex = ROOM_TYPES.indexOf(selectedType);
+    const newIndex = ROOM_TYPES.indexOf(newType);
     setDirection(newIndex > currentIndex ? 1 : -1);
     setSelectedType(newType);
     setCurrentPage(1); // Reset pagination on filter change
@@ -156,7 +138,9 @@ const RoomsPage: FC = () => {
   const filteredRooms =
     selectedType === "All"
       ? rooms
-      : rooms.filter((room) => roomTypeMapping[room.type_id] === selectedType);
+      : rooms.filter(
+          (room) => ROOM_TYPE_MAPPING[room.type_id] === selectedType
+        );
 
   // **Calculate Pagination**
   const totalPages = Math.ceil(filteredRooms.length / ITEMS_PER_PAGE);
@@ -189,7 +173,7 @@ const RoomsPage: FC = () => {
               defaultValue={selectedType}
               onValueChange={handleTypeChange}
             >
-              {roomTypes.map((type) => (
+              {ROOM_TYPES.map((type) => (
                 <button
                   key={type}
                   data-id={type}

@@ -525,8 +525,6 @@ export default function RoomDetailPage() {
   const currentRoundId = roundList[currentRoundIndex]?.id;
   const currentRoundContractId =
     roundList[currentRoundIndex]?.underlying_contract_round;
-  const roundStatus = roundList[currentRoundIndex]?.status;
-  const roundActive = roundList[currentRoundIndex]?.active;
 
   const { data: roundAgentMessages, isLoading: isLoadingRoundAgentMessages } =
     useRoundAgentMessages(currentRoundId);
@@ -793,7 +791,7 @@ export default function RoomDetailPage() {
 
   const isRoundTimerExpired = (() => {
     const currentRoundCreatedAt = roundList[0]?.created_at;
-    const roundDuration = roomData.room_config?.round_duration;
+    const roundDuration = (roomData.room_config as any).round_duration;
     const timeLeft = calculateCurrentRoundAndCountdown(
       currentRoundCreatedAt,
       roundDuration
