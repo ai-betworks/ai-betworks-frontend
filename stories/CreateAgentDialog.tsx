@@ -28,6 +28,10 @@ import { coreAbi } from "@/lib/contract.types";
 import { useAccount, usePublicClient, useWriteContract, useWalletClient } from "wagmi";
 import { Database } from "@/lib/database.types";
 import { formatEther } from "viem";
+import { getChainMetadata } from "@/lib/utils";
+import { scrollSepolia } from "viem/chains";
+import scrollIcon from "@/stories/assets/crypto/scroll.svg";
+
 
 // Helper function to generate a random hex color.
 const generateRandomColor = (includeHash = false) => {
@@ -156,7 +160,7 @@ export default function CreateAgentModal() {
 
   useEffect(() => {
     if (!publicClient) return;
-    
+
     getFees()
       .then((result) => {
         setFees(result);
@@ -169,7 +173,7 @@ export default function CreateAgentModal() {
       if (!publicClient) {
         throw new Error("Public client not available");
       }
-      
+
       if (fees && userAddress && walletClient) {
         const { request } = await publicClient.simulateContract({
           abi: coreAbi,
@@ -178,7 +182,7 @@ export default function CreateAgentModal() {
           value: fees[0],
           account: userAddress,
         });
-        
+
         if (!walletClient) {
           throw new Error("Wallet client not available");
         }
@@ -252,6 +256,9 @@ export default function CreateAgentModal() {
           Creating this agent will cost
         </div>
         <div className="text-foreground text-xl">
+          {/* TODO: get from selected chain? */}
+
+          <img src={scrollIcon.src} className="w-4 h-4 inline-block align-baseline" />{" "}
           {fees ? formatEther(fees[1]) : "Loading..."} ETH
         </div>
         <div className="text-sm text-muted-foreground">

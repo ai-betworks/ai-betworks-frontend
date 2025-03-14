@@ -121,6 +121,8 @@ export function CreateRoomModal({
     setCreateRoomFormState((s) => ({ ...s, settings: newSettings }));
   };
 
+  const chainIcon = getChainMetadata(chain?.id || 0).icon;
+
   // Fetch room types
   useEffect(() => {
     supabase
@@ -776,6 +778,9 @@ export function CreateRoomModal({
           Creating this room will cost
         </div>
         <div className="text-foreground text-xl">
+          {chainIcon && (
+            <img src={chainIcon} className="w-4 h-4 inline-block align-baseline" />
+          )}{" "}
           {fees ? formatEther(fees[1]) : "Loading..."}{" "}
           {chain?.nativeCurrency.symbol}
         </div>
