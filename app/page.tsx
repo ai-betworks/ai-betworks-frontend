@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import localFont from "next/font/local";
 import AgentsTable from "@/components/landing/agents-table";
 import { DM_Sans } from "next/font/google";
-import LatestRoomsTable from "@/components/landing/rooms-table";
+import LatestRoomsTable from "@/components/rooms-table";
 import Image from "next/image";
 import swords from "@/public/swords.png";
 import Link from "next/link";

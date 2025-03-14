@@ -17,9 +17,18 @@ import { ClipboardCopy } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
-export default function AgentsTable() {
+export default function AgentsLandingTable() {
   const [agents, setAgents] = useState<
-    PartialExcept<Tables<"agents">, "id" | "display_name" | "type" | "earnings" | "eth_wallet_address" | "image_url" | "color">[]
+    PartialExcept<
+      Tables<"agents">,
+      | "id"
+      | "display_name"
+      | "type"
+      | "earnings"
+      | "eth_wallet_address"
+      | "image_url"
+      | "color"
+    >[]
   >([]);
   const [loading, setLoading] = useState(true);
 
@@ -46,7 +55,6 @@ export default function AgentsTable() {
   // Create an array of 5 skeleton rows that show static row numbers.
   const skeletonRows = Array.from({ length: 5 }).map((_, index) => (
     <TableRow key={index}>
-      <TableCell>{index + 1}</TableCell>
       <TableCell className="flex items-center gap-3">
         <div className="h-8 w-8 bg-gray-300 animate-pulse rounded-full"></div>
         <div className="h-4 w-24 bg-gray-300 animate-pulse rounded"></div>
@@ -67,7 +75,6 @@ export default function AgentsTable() {
     <Table className="bg-transparent">
       <TableHeader>
         <TableRow>
-          <TableHead className="text-left">#</TableHead>
           <TableHead className="text-left">Agent</TableHead>
           <TableHead className="text-center">Address</TableHead>
           <TableHead className="text-center">Earnings</TableHead>
@@ -76,10 +83,8 @@ export default function AgentsTable() {
       <TableBody>
         {loading
           ? skeletonRows
-          : agents.map((agent, index) => (
+          : agents.map((agent) => (
               <TableRow key={agent.id} className="h-16">
-                {/* Row number cell */}
-                <TableCell>{index + 1}</TableCell>
                 <TableCell className="flex items-center gap-3">
                   <AgentAvatar
                     id={agent.id}

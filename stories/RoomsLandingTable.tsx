@@ -35,7 +35,7 @@ export type RoomWithRelations = {
   }> | null;
 };
 
-export default function LatestRoomsTable() {
+export default function RoomsLandingTable() {
   const { toast } = useToast();
   const [rooms, setRooms] = useState<RoomWithRelations[]>([]);
   const [loading, setLoading] = useState(true);
@@ -66,7 +66,7 @@ export default function LatestRoomsTable() {
           )
         `
         )
-        // .order("created_at", { ascending: false })
+        .order("created_at", { ascending: false })
         .limit(5);
 
       if (error) {
@@ -87,15 +87,14 @@ export default function LatestRoomsTable() {
   // Create an array of 5 skeleton rows with static row numbers.
   const skeletonRows = Array.from({ length: 5 }).map((_, index) => (
     <TableRow key={index} className="h-16">
-      <TableCell className="align-middle">{index + 1}</TableCell>
-      <TableCell className="align-middle">
+      <TableCell className="flex items-center gap-3">
         <div className="h-4 w-24 bg-gray-300 animate-pulse rounded"></div>
       </TableCell>
-      <TableCell className="align-middle text-center">
+      <TableCell className="text-center">
         <div className="h-6 w-6 bg-gray-300 animate-pulse rounded-full inline-block"></div>
       </TableCell>
-      <TableCell className="align-middle text-center">
-        <div className="flex space-x-2">
+      <TableCell className="text-center">
+        <div className="flex justify-center -space-x-2">
           <div className="h-8 w-8 bg-gray-300 animate-pulse rounded-full"></div>
           <div className="h-8 w-8 bg-gray-300 animate-pulse rounded-full"></div>
         </div>
@@ -106,8 +105,7 @@ export default function LatestRoomsTable() {
   return (
     <Table className="bg-transparent">
       <TableHeader>
-        <TableRow className="">
-          <TableHead className="text-left">#</TableHead>
+        <TableRow>
           <TableHead className="text-left">Name</TableHead>
           <TableHead className="text-center">Network</TableHead>
           <TableHead className="text-center">Agents</TableHead>
@@ -116,7 +114,7 @@ export default function LatestRoomsTable() {
       <TableBody>
         {loading
           ? skeletonRows
-          : rooms.map((room, index) => {
+          : rooms.map((room) => {
               // Pick the most recent round (if available) by sorting rounds by created_at descending.
               const latestRound =
                 room.rounds && room.rounds.length > 0
@@ -128,12 +126,12 @@ export default function LatestRoomsTable() {
                   : null;
               return (
                 <TableRow key={room.id} className="h-16">
-                  {/* Row number */}
-                  <TableCell className="align-middle">{index + 1}</TableCell>
                   {/* Room name */}
-                  <TableCell className="align-middle">{room.name}</TableCell>
+                  <TableCell className="flex items-center gap-3">
+                    <span>{room.name}</span>
+                  </TableCell>
                   {/* Network: display an icon based on chain_id */}
-                  <TableCell className="align-middle text-center">
+                  <TableCell className="text-center">
                     {room.chain_id && chainMetadata[room.chain_id]?.icon ? (
                       <Image
                         src={chainMetadata[room.chain_id].icon}
@@ -147,7 +145,7 @@ export default function LatestRoomsTable() {
                     )}
                   </TableCell>
                   {/* Agents: display AgentAvatar for each agent in the latest round */}
-                  <TableCell className="align-middle text-center">
+                  <TableCell className="text-center">
                     <div className="flex -space-x-2 justify-center">
                       {latestRound &&
                       latestRound.round_agents &&
