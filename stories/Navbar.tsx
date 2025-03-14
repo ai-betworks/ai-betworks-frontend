@@ -2,10 +2,9 @@
 import * as React from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import Image from "next/image";
 import { cn } from "@/lib/utils";
-import logo from "@/public/logo.svg";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
+import localFont from "next/font/local";
 
 export interface NavItem {
   href: string;
@@ -18,6 +17,10 @@ export interface NavbarProps {
   className?: string;
   navItems?: NavItem[];
 }
+
+const joystix = localFont({
+  src: "../public/fonts/joystix.otf",
+});
 
 export function Navbar({ className, navItems }: NavbarProps) {
   const pathname = usePathname();
@@ -48,15 +51,9 @@ export function Navbar({ className, navItems }: NavbarProps) {
 
   return (
     <nav className={cn("", className)}>
-      <div className="container mx-auto flex h-20 items-center gap-x-10 border-b">
+      <div className="container mx-auto flex h-20 items-center gap-x-8 border-b">
         <Link href="/" className="flex items-center">
-          <Image
-            src={logo.src}
-            alt="Autonome"
-            width={500}
-            height={500}
-            className="h-6 w-fit"
-          />
+          <span className={`${joystix.className} text-2xl`}>AI BETWORKS</span>
         </Link>
         <div className="flex items-center gap-4 ml-8">
           {items.map((item) => (
