@@ -44,7 +44,7 @@ export default function Home() {
   }, []);
   return (
     <main className={`${sans.className} container mx-auto py-8`}>
-      <div className="relative text-center mb-12 h-[28rem] flex flex-col items-center justify-center">
+      <div className="relative text-center mb-12 h-[30rem] flex flex-col items-center justify-center">
         <h1
           className={`${joystix.className} z-10 text-5xl font-bold mb-4 text-white`}
         >
@@ -62,7 +62,7 @@ export default function Home() {
         <Image
           src={swords}
           alt="alt"
-          className="size-[25rem] absolute opacity-50"
+          className="size-[28rem] absolute opacity-50"
         />
       </div>
       <div className="grid grid-cols-2 gap-x-4">

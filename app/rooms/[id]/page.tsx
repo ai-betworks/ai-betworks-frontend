@@ -313,7 +313,7 @@ function RoundDetailsAndNavigation({
           {participants} {participants === 1 ? "person" : "people"} watching
         </span>
 
-        <span className="text-xl font-bold bg-[#E97B17] text-white py-2 px-3 rounded">
+        <span className="text-xl font-bold bg-[#6F5F2D] text-white py-2 px-3 rounded">
           {timeLeft}
         </span>
       </div>

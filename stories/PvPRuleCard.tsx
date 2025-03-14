@@ -162,7 +162,7 @@ export function PvPRuleCard({
     <div
       className={cn(
         "flex flex-col items-center p-2 rounded-lg border-2 transition-all group w-[180px]",
-        "hover:scale-105 hover:shadow-lg hover:shadow-primary/20",
+        "hover:scale-105 hover:shadow-lg hover:shadow-white/50",
         getImpactStyles(config.impact),
         getDisabledStyles(disabled),
         className
