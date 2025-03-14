@@ -1,4 +1,4 @@
-# PvPvAI Frontend
+# AI Betworks Frontend
 
 ## Key libraries
 * `bun` is being used as the package manager because it's 2025

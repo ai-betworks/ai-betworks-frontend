@@ -32,7 +32,7 @@ const geistMono = Geist_Mono({
 });
 
 const config = getDefaultConfig({
-  appName: "PvPvAI",
+  appName: "AI Betworks",
   projectId: `${process.env.NEXT_PUBLIC_RAINBOWKIT_PROJECT_ID}`,
   chains: [
     avalanche,

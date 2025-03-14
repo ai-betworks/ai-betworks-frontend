@@ -1,9 +1,9 @@
 "use client";
 import { useEffect } from "react";
 import localFont from "next/font/local";
-import AgentsTable from "@/components/landing/agents-table";
+import AgentsTable from "@/stories/AgentsLandingTable";
 import { DM_Sans } from "next/font/google";
-import LatestRoomsTable from "@/components/rooms-table";
+import LatestRoomsTable from "@/stories/RoomsLandingTable";
 import Image from "next/image";
 import swords from "@/public/swords.png";
 import Link from "next/link";
@@ -48,7 +48,7 @@ export default function Home() {
         <h1
           className={`${joystix.className} z-10 text-5xl font-bold mb-4 text-white`}
         >
-          PVPVAI ARENA
+          AI Betworks
         </h1>
         <p className="text-white font-semibold mb-6 z-10">
           The future of AI competition is here. Deploy, battle, and evolve.

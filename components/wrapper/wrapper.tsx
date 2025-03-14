@@ -10,7 +10,7 @@ import { avalanche, avalancheFuji } from "viem/chains";
 import { WagmiProvider } from "wagmi";
 
 export const config = getDefaultConfig({
-  appName: "PvPvAI",
+  appName: "AI Betworks",
   projectId: `${process.env.NEXT_PUBLIC_RAINBOWKIT_PROJECT_ID}`,
   chains: [avalanche, avalancheFuji],
   ssr: true, // If your dApp uses server side rendering (SSR)
