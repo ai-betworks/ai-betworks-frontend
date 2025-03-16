@@ -1,4 +1,5 @@
 "use client";
+import { Badge } from "@/components/ui/badge";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { chainMetadata } from "@/lib/utils";
 import { RoomWithRelations } from "@/stories/RoomTable";
@@ -27,17 +28,32 @@ export function RoomTableRow({
   //   new Date(room.round_ends_on || "000000").getTime() / 1000
   // ); // Ensure the format is correct
   const roomType = roomTypeMapping[room.type_id];
+  // Use the active field from the database, falling back to isActive if available
+  const isActive = room.active !== false && room.isActive !== false; // Default to true if undefined or true
+
   return (
-    <TableRow style={style} className={className}>
-      <TableCell className="text-base pl-6">{room.id}</TableCell>
+    <TableRow
+      style={style}
+      className={`${className} ${!isActive ? "opacity-60" : ""}`}
+    >
       <TableCell className="text-xl pl-6">
-        <Link
-          href={`/rooms/${room.id}`}
-          className="hover:underline font-medium capitalize"
-          style={{ color: room.color || "black" }}
-        >
-          {room.name}
-        </Link>
+        <div className="flex items-center gap-2">
+          <Link
+            href={`/rooms/${room.id}`}
+            className="hover:underline font-medium capitalize"
+            style={{ color: room.color || "black" }}
+          >
+            {room.name}
+          </Link>
+          {!isActive && (
+            <Badge
+              variant="outline"
+              className="text-xs bg-gray-100 dark:bg-gray-800"
+            >
+              Inactive
+            </Badge>
+          )}
+        </div>
       </TableCell>
 
       {showRoomType && (

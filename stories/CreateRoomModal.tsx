@@ -4,25 +4,21 @@ import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import supabase from "@/lib/config";
+import supabase, { getChainMetadata } from "@/lib/config";
 import { SupportedChains } from "@/lib/consts";
 import { coreAbi } from "@/lib/contract.types";
 import { Tables } from "@/lib/database.types";
-import {
-  cn,
-  generateRandomColor,
-  getChainMetadata,
-} from "@/lib/utils";
+import { cn, generateRandomColor } from "@/lib/utils";
 import { OnchainKitProvider } from "@coinbase/onchainkit";
 import { getTokens } from "@coinbase/onchainkit/api";
 import { Token, TokenImage } from "@coinbase/onchainkit/token";
 import { useEffect, useState } from "react";
 import { createPublicClient, formatEther, getAddress, http } from "viem";
+import { base } from "viem/chains";
 import { useAccount, useContractWrite } from "wagmi";
 import { AgentAvatar } from "./AgentAvatar";
 import { NetworkSelector } from "./NetworkSelector";
 import { PvPRuleCard } from "./PvPRuleCard";
-import { base } from "viem/chains";
 
 type PvPRule =
   | "SILENCE"
@@ -121,7 +117,8 @@ export function CreateRoomModal({
     setCreateRoomFormState((s) => ({ ...s, settings: newSettings }));
   };
 
-  const chainIcon = getChainMetadata(chain?.id || 0).icon;
+  const walletChain = getChainMetadata(chain?.id || 0);
+  const chainIcon = walletChain.icon;
 
   // Fetch room types
   useEffect(() => {
@@ -369,7 +366,7 @@ export function CreateRoomModal({
             className={`p-4 rounded-lg border-2 text-left ${
               createRoomFormState.roomType === type.id
                 ? "border-primary"
-                : "border-gray-600"
+                : "border-gray-600 hover:border-primary"
             }`}
             onClick={() =>
               setCreateRoomFormState((s) => ({
@@ -708,6 +705,7 @@ export function CreateRoomModal({
                 <PvPRuleCard
                   key={rule}
                   variant={rule}
+                  variant_type="create"
                   selected={createRoomFormState.pvpRules.includes(rule)}
                   className={
                     !createRoomFormState.pvpEnabled
@@ -730,6 +728,7 @@ export function CreateRoomModal({
                 <PvPRuleCard
                   key={rule}
                   variant={rule}
+                  variant_type="create"
                   selected={createRoomFormState.pvpRules.includes(rule)}
                   className={
                     !createRoomFormState.pvpEnabled
@@ -752,6 +751,7 @@ export function CreateRoomModal({
                 <PvPRuleCard
                   key={rule}
                   variant={rule}
+                  variant_type="create"
                   selected={createRoomFormState.pvpRules.includes(rule)}
                   className={
                     !createRoomFormState.pvpEnabled
@@ -779,7 +779,10 @@ export function CreateRoomModal({
         </div>
         <div className="text-foreground text-xl">
           {chainIcon && (
-            <img src={chainIcon} className="w-4 h-4 inline-block align-baseline" />
+            <img
+              src={chainIcon}
+              className="w-4 h-4 inline-block align-baseline"
+            />
           )}{" "}
           {fees ? formatEther(fees[1]) : "Loading..."}{" "}
           {chain?.nativeCurrency.symbol}

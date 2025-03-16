@@ -5,7 +5,7 @@ import AgentsTable from "@/stories/AgentsLandingTable";
 import { DM_Sans } from "next/font/google";
 import LatestRoomsTable from "@/stories/RoomsLandingTable";
 import Image from "next/image";
-import swords from "@/public/swords.png";
+import logo from "@/public/logo.png";
 import Link from "next/link";
 import goku from "@/public/gok.gif";
 
@@ -60,7 +60,7 @@ export default function Home() {
           Get Started
         </Link>
         <Image
-          src={swords}
+          src={logo}
           alt="alt"
           className="size-[28rem] absolute opacity-50"
         />

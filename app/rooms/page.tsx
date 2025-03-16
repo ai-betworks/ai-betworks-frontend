@@ -4,6 +4,8 @@ import Loader from "@/components/loader";
 import AnimatedBackground from "@/components/ui/animated-tabs";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import {
   Table,
   TableBody,
@@ -35,6 +37,7 @@ export interface RoomWithRelations extends Room {
     color: string;
   }[];
   roundNumber: number;
+  isActive: boolean;
   agentMessages: {
     agentId: number;
     message: string;
@@ -59,6 +62,7 @@ const RoomsPage: FC = () => {
   const [createRoomOpen, setCreateRoomOpen] = useState(false);
   const [direction, setDirection] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
+  const [showInactive, setShowInactive] = useState(false);
   const isBuySell = selectedType === "Buy / Hold / Sell";
 
   const { isConnected } = useAccount();
@@ -76,6 +80,7 @@ const RoomsPage: FC = () => {
             color,
             chain_id,
             room_config,
+            active,
             rounds!inner(
               id,
               created_at,
@@ -103,6 +108,7 @@ const RoomsPage: FC = () => {
           (room: any) => ({
             ...room,
             participants: room.participants?.[0]?.count ?? 0,
+            isActive: room.active ?? true, // Default to true if not specified
             agents:
               room.rounds?.[0]?.round_agents?.map((ra: any) => ({
                 id: ra.agent.id,
@@ -135,12 +141,14 @@ const RoomsPage: FC = () => {
     setCurrentPage(1); // Reset pagination on filter change
   };
 
-  const filteredRooms =
-    selectedType === "All"
-      ? rooms
-      : rooms.filter(
-          (room) => ROOM_TYPE_MAPPING[room.type_id] === selectedType
-        );
+  // First filter by active status, then by room type
+  const filteredRooms = rooms
+    .filter((room) => showInactive || room.active)
+    .filter((room) =>
+      selectedType === "All"
+        ? true
+        : ROOM_TYPE_MAPPING[room.type_id] === selectedType
+    );
 
   // **Calculate Pagination**
   const totalPages = Math.ceil(filteredRooms.length / ITEMS_PER_PAGE);
@@ -150,7 +158,7 @@ const RoomsPage: FC = () => {
   );
 
   const cardTransition = useTransition(
-    [{ rooms: paginatedRooms, key: selectedType }],
+    [{ rooms: paginatedRooms, key: `${selectedType}-${showInactive}` }],
     {
       from: { opacity: 0, transform: `translateX(${direction * 100}%)` },
       enter: { opacity: 1, transform: "translateX(0%)" },
@@ -166,7 +174,7 @@ const RoomsPage: FC = () => {
     <div className="container mx-auto py-8 min-h-screen">
       {/* Filters & Create Room Button */}
       <div className="flex justify-between items-center mb-6">
-        <div className="flex justify-center">
+        <div className="flex items-center gap-6">
           <div className="bg-secondary/30 p-1.5 rounded-lg">
             <AnimatedBackground
               className="bg-secondary/50 rounded-md"
@@ -184,7 +192,19 @@ const RoomsPage: FC = () => {
               ))}
             </AnimatedBackground>
           </div>
+
+          <div className="flex items-center space-x-2">
+            <Switch
+              id="show-inactive"
+              checked={showInactive}
+              onCheckedChange={setShowInactive}
+            />
+            <Label htmlFor="show-inactive" className="text-sm font-medium">
+              Show Inactive Rooms
+            </Label>
+          </div>
         </div>
+
         <Button
           onClick={() => setCreateRoomOpen(true)}
           disabled={!isConnected}
@@ -204,9 +224,6 @@ const RoomsPage: FC = () => {
             <Table>
               <TableHeader>
                 <TableRow className="border-b-[6px] border-gray-300 dark:border-gray-400">
-                  <TableHead className="text-xl font-bold text-gray-700 dark:text-gray-200 pl-6 py-4 w-fit">
-                    # Id
-                  </TableHead>
                   <TableHead className="text-xl font-bold text-gray-700 dark:text-gray-200 pl-6 py-4 w-[400px]">
                     Name
                   </TableHead>
@@ -236,14 +253,26 @@ const RoomsPage: FC = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {item.rooms.map((room) => (
-                  <RoomTableRow
-                    key={room.id}
-                    room={room}
-                    showRoomType={!isBuySell}
-                    showToken={isBuySell}
-                  />
-                ))}
+                {item.rooms.length > 0 ? (
+                  item.rooms.map((room) => (
+                    <RoomTableRow
+                      key={room.id}
+                      room={room}
+                      showRoomType={!isBuySell}
+                      showToken={isBuySell}
+                    />
+                  ))
+                ) : (
+                  <TableRow>
+                    <td
+                      colSpan={isBuySell ? 5 : 5}
+                      className="text-center py-8 text-gray-500"
+                    >
+                      No rooms found.{" "}
+                      {!showInactive && "Try including inactive rooms."}
+                    </td>
+                  </TableRow>
+                )}
               </TableBody>
             </Table>
           </AnimatedCard>
@@ -259,10 +288,10 @@ const RoomsPage: FC = () => {
           Previous
         </Button>
         <span className="text-lg font-bold">
-          Page {currentPage} of {totalPages}
+          Page {currentPage} of {Math.max(1, totalPages)}
         </span>
         <Button
-          disabled={currentPage === totalPages}
+          disabled={currentPage === totalPages || totalPages === 0}
           onClick={() => setCurrentPage(currentPage + 1)}
         >
           Next

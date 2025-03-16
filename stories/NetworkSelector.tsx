@@ -1,9 +1,8 @@
 "use client";
 
 import { SupportedChains } from "@/lib/consts";
-import { scroll, scrollSepolia, sonic, sonicBlazeTestnet } from "viem/chains";
+import { scroll, scrollSepolia } from "viem/chains";
 import { ChainButton } from "./ChainButton";
-import sonicFullIcon from "./assets/crypto/sonic-full-black.svg";
 import scrollFullIcon from "./assets/crypto/scroll-full-black.svg";
 
 interface NetworkSelectorProps {
@@ -42,13 +41,13 @@ export function NetworkSelector({
           iconClassName="w-[160px] h-[40px]"
           onClick={() => onChainSelect(sonicBlazeTestnet)}
         /> */}
-          <ChainButton
-            iconUrl={scrollFullIcon.src}
-            selected={selectedChain?.id === scrollSepolia.id}
-            className="bg-[#FFF] w-full h-[60px] mt-4"
-            iconClassName="w-[160px] h-[40px]"
-            onClick={() => onChainSelect(scrollSepolia)}
-          />
+        <ChainButton
+          iconUrl={scrollFullIcon.src}
+          selected={selectedChain?.id === scrollSepolia.id}
+          className="bg-[#FFF] w-full h-[60px] mt-4"
+          iconClassName="w-[160px] h-[40px]"
+          onClick={() => onChainSelect(scrollSepolia)}
+        />
       </div>
       <div>
         <div className="font-medium text-red-300">Mainnet</div>

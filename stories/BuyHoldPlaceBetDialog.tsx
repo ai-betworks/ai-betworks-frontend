@@ -11,9 +11,11 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { getChainMetadata } from "@/lib/config";
 import { roomAbi } from "@/lib/contract.types";
 import { Tables } from "@/lib/database.types";
-import { cn, getChainMetadata } from "@/lib/utils";
+import { cn } from "@/lib/utils";
+import Image from "next/image";
 import { useState } from "react";
 import { getAddress, parseEther } from "viem";
 import { useAccount, usePublicClient, useWriteContract } from "wagmi";
@@ -127,14 +129,8 @@ export function BuyHoldPlaceBetDialog({
                 ? "Modify or Cancel Hold Bet"
                 : selectedBetType === "buy"
                 ? "Modify or Cancel Buy Bet"
-                : "Place a Bet"}
-              {` on`}{" "}
-              <span
-                className="border-primary border-b"
-                style={{ color: borderColor }}
-              >
-                {name}
-              </span>
+                : "Place a bet"}
+              {` on`} <span style={{ color: borderColor }}>{name}</span>
             </div>
           </DialogTitle>
           <DialogDescription>
@@ -171,23 +167,62 @@ export function BuyHoldPlaceBetDialog({
                 </AnimatedBackground>
               </div>
 
-              <div className="flex flex-col items-center justify-center gap-x-4 w-full">
-                <div className="flex items-center justify-center gap-x-2 w-full">
-                  <Input
-                    type="number"
-                    step="0.01"
-                    value={localBetAmount}
-                    onChange={handleBetAmountChange}
-                    placeholder="Enter bet amount"
-                    className="w-1/2 mb-2 border-primary/50 rounded"
-                  />
-                  <span className="text-lg font-medium text-primary/70">
-                    <img src={chainIcon} className="w-4 h-4 inline-block" />{" "}
-                    {nativeSymbol}
-                  </span>
+              <div className="flex flex-col items-center justify-center space-y-4 w-full">
+                <div className="flex items-center justify-center w-full">
+                  <div className="relative w-1/2">
+                    <Input
+                      type="number"
+                      step="0.01"
+                      value={localBetAmount}
+                      onChange={handleBetAmountChange}
+                      placeholder="Enter bet amount"
+                      className="w-full border-primary/50 rounded pr-24 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                    />
+                    <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                      <div className="flex items-center gap-x-1 pl-1 border-l border-primary/20">
+                        <Image
+                          src={chainIcon}
+                          width={16}
+                          height={16}
+                          alt="Chain icon"
+                        />
+                        <span className="text-sm font-medium text-primary/70">
+                          {nativeSymbol}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="absolute inset-y-0 right-[4.5rem] flex flex-col justify-center">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const newValue =
+                            (parseFloat(localBetAmount) || 0) + 0.01;
+                          setLocalBetAmount(newValue.toString());
+                          setBetAmountError(null);
+                        }}
+                        className="h-[45%] px-1 text-xs text-primary/70 hover:text-primary cursor-pointer"
+                      >
+                        ▲
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const newValue = Math.max(
+                            (parseFloat(localBetAmount) || 0) - 0.01,
+                            0
+                          );
+                          setLocalBetAmount(newValue.toString());
+                          setBetAmountError(null);
+                        }}
+                        className="h-[45%] px-1 text-xs text-primary/70 hover:text-primary cursor-pointer"
+                      >
+                        ▼
+                      </button>
+                    </div>
+                  </div>
                 </div>
 
-                <div className="space-x-6">
+                <div className="flex items-center justify-center gap-x-4">
                   {[1, 0.1, 0.01, 0.001, 0.0001].map((amount) => (
                     <button
                       key={amount}
@@ -195,7 +230,7 @@ export function BuyHoldPlaceBetDialog({
                         setLocalBetAmount(amount.toString());
                         setBetAmountError(null);
                       }}
-                      className="text-xs text-gray-400"
+                      className="text-xs text-gray-400 hover:text-gray-300 transition-colors"
                     >
                       {amount}
                     </button>

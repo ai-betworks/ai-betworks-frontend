@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
-import { animated, useTransition } from "@react-spring/web";
+import AnimatedBackground from "@/components/ui/animated-tabs";
+import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {
   Table,
@@ -10,12 +10,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
-import AnimatedBackground from "@/components/ui/animated-tabs";
+import type { Tables } from "@/lib/database.types";
+import { animated, useTransition } from "@react-spring/web";
+import { useState } from "react";
+import { useAccount } from "wagmi";
 import { CreateRoomModal } from "./CreateRoomModal";
 import { RoomTableRow } from "./RoomTableRow";
-import { useAccount } from "wagmi";
-import type { Tables } from "@/lib/database.types";
 
 /** Types from your code */
 export type Agent = Tables<"agents">;
@@ -32,6 +32,7 @@ export interface RoomWithRelations extends Room {
     color: string;
   }[];
   roundNumber: number;
+  isActive?: boolean;
   agentMessages: {
     agentId: number;
     message: string;
@@ -70,6 +71,7 @@ interface RoomTableProps {
   rooms: RoomWithRelations[]; // use your own type
   roomType?: RoomTypeName | "All";
   showTabs?: boolean;
+  showInactive?: boolean;
   onRoomTypeChange?: (type: RoomTypeName | "All") => void;
 }
 
@@ -79,6 +81,7 @@ export function RoomTable({
   rooms,
   roomType = "All",
   showTabs = false,
+  showInactive = false,
   onRoomTypeChange,
 }: RoomTableProps) {
   const [selectedType, setSelectedType] = useState<RoomTypeName | "All">(
@@ -94,10 +97,13 @@ export function RoomTable({
   const isBuySell = selectedType === "Buy / Hold / Sell";
 
   // Filter rooms in memory, no new fetch
-  const filteredRooms =
-    selectedType === "All"
-      ? rooms
-      : rooms.filter((room) => roomTypeMapping[room.type_id] === selectedType);
+  const filteredRooms = rooms
+    .filter((room) => showInactive || room.active)
+    .filter((room) =>
+      selectedType === "All"
+        ? true
+        : roomTypeMapping[room.type_id] === selectedType
+    );
 
   // Called whenever user selects a new type
   const handleTypeChange = (value: string | null) => {
@@ -118,7 +124,7 @@ export function RoomTable({
 
   // Animate transition between filter states
   const cardTransition = useTransition(
-    [{ rooms: filteredRooms, key: selectedType }],
+    [{ rooms: filteredRooms, key: `${selectedType}-${showInactive}` }],
     {
       from: { opacity: 0, transform: `translateX(${direction * 100}%)` },
       enter: { opacity: 1, transform: "translateX(0%)" },
@@ -212,14 +218,26 @@ export function RoomTable({
                 </TableRow>
               </TableHeader>
               <TableBody className="text-lg [&_tr]:border-t [&_tr]:border-gray-300/60 dark:[&_tr]:border-gray-400/60">
-                {item.rooms.map((room) => (
-                  <RoomTableRow
-                    key={room.id}
-                    room={room}
-                    showRoomType={!isBuySell}
-                    showToken={isBuySell}
-                  />
-                ))}
+                {item.rooms.length > 0 ? (
+                  item.rooms.map((room) => (
+                    <RoomTableRow
+                      key={room.id}
+                      room={room}
+                      showRoomType={!isBuySell}
+                      showToken={isBuySell}
+                    />
+                  ))
+                ) : (
+                  <TableRow>
+                    <td
+                      colSpan={isBuySell ? 6 : 7}
+                      className="text-center py-8 text-gray-500"
+                    >
+                      No rooms found.{" "}
+                      {!showInactive && "Try including inactive rooms."}
+                    </td>
+                  </TableRow>
+                )}
               </TableBody>
             </Table>
           </AnimatedCard>

@@ -1,22 +1,17 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
-import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { ColorPicker } from "@/components/ui/color-picker";
 import {
   Dialog,
   DialogContent,
-  DialogTrigger,
-  DialogTitle,
   DialogHeader,
+  DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog";
-import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import { ColorPicker } from "@/components/ui/color-picker";
-import { readContract } from "viem/actions";
 import {
   Select,
   SelectContent,
@@ -24,14 +19,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import { coreAbi } from "@/lib/contract.types";
-import { useAccount, usePublicClient, useWriteContract, useWalletClient } from "wagmi";
 import { Database } from "@/lib/database.types";
-import { formatEther } from "viem";
-import { getChainMetadata } from "@/lib/utils";
-import { scrollSepolia } from "viem/chains";
 import scrollIcon from "@/stories/assets/crypto/scroll.svg";
-
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useEffect, useState } from "react";
+import { formatEther } from "viem";
+import { useAccount, usePublicClient, useWalletClient } from "wagmi";
 
 // Helper function to generate a random hex color.
 const generateRandomColor = (includeHash = false) => {
@@ -65,7 +60,7 @@ export default function CreateAgentModal() {
       adjectives: "",
       messageExamples: "",
       postExamples: "",
-      model: "gemini-2.0-flash-thinking-exp",
+      model: "",
       modelProvider: "",
     },
   });
@@ -257,8 +252,10 @@ export default function CreateAgentModal() {
         </div>
         <div className="text-foreground text-xl">
           {/* TODO: get from selected chain? */}
-
-          <img src={scrollIcon.src} className="w-4 h-4 inline-block align-baseline" />{" "}
+          <img
+            src={scrollIcon.src}
+            className="w-4 h-4 inline-block align-baseline"
+          />{" "}
           {fees ? formatEther(fees[1]) : "Loading..."} ETH
         </div>
         <div className="text-sm text-muted-foreground">
@@ -418,9 +415,9 @@ export default function CreateAgentModal() {
                   <SelectValue placeholder="Select model provider" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="openai">openai</SelectItem>
-                  <SelectItem value="anthropic">anthropic</SelectItem>
-                  <SelectItem value="openrouter">openrouter</SelectItem>
+                  <SelectItem value="openai">OpenAI</SelectItem>
+                  <SelectItem value="anthropic">Anthropic</SelectItem>
+                  <SelectItem value="openrouter">OpenRouter</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -429,8 +426,10 @@ export default function CreateAgentModal() {
               <Input
                 name="model"
                 value={agentData.characterCard.model}
-                readOnly
+                onChange={handleCharacterCardChange}
+                placeholder="Enter model name"
                 className="bg-muted"
+                required
               />
             </div>
           </div>

@@ -21,9 +21,10 @@ import {
   PvpPoisonStatusType,
   PvpSilenceStatusType,
 } from "@/lib/backend.types";
+import { getChainMetadata } from "@/lib/config";
 import { roomAbi } from "@/lib/contract.types";
 import { Tables } from "@/lib/database.types";
-import { blockEndTimeToTimer, getChainMetadata } from "@/lib/utils";
+import { blockEndTimeToTimer } from "@/lib/utils";
 import * as React from "react";
 import { getAddress, parseEther, stringToHex } from "viem";
 import { useAccount, usePublicClient, useWriteContract } from "wagmi";
@@ -237,7 +238,7 @@ export function PvpActionDialog({
         <DialogHeader>
           <DialogTitle className="text-center">
             Launch a PvP Action Against{" "}
-            <span className="text-primary">{agentName}</span>
+            <span style={{ color: borderColor }}>{agentName}</span>
           </DialogTitle>
           <DialogDescription asChild>
             <div className="flex flex-col items-center justify-center gap-y-4 py-6">
@@ -250,6 +251,7 @@ export function PvpActionDialog({
                   </span>
                   <PvPRuleCard
                     variant="ATTACK"
+                    variant_type="room"
                     selected={pvpVerb === "attack"}
                     onClick={() => handleActionClick("attack")}
                   />
@@ -263,6 +265,7 @@ export function PvpActionDialog({
                   </span>
                   <PvPRuleCard
                     variant="SILENCE"
+                    variant_type="room"
                     selected={pvpVerb === "silence"}
                     onClick={() => handleActionClick("silence")}
                     disabled={silence ? true : false}
@@ -313,6 +316,7 @@ export function PvpActionDialog({
                   </span>
                   <PvPRuleCard
                     variant="DEAFEN"
+                    variant_type="room"
                     selected={pvpVerb === "deafen"}
                     onClick={() => handleActionClick("deafen")}
                     disabled={deafen ? true : false}
@@ -332,6 +336,7 @@ export function PvpActionDialog({
                   </span>
                   <PvPRuleCard
                     variant="POISON"
+                    variant_type="room"
                     selected={pvpVerb === "poison"}
                     onClick={() => handleActionClick("poison")}
                     disabled={poison ? true : false}
@@ -357,7 +362,7 @@ export function PvpActionDialog({
                               setAttackInputText(e.target.value);
                             }
                           }}
-                          placeholder="Enter 4 to 5 words..."
+                          placeholder="Enter your message to the agent..."
                           className="resize-none pr-16 border-gray-400"
                           rows={3}
                         />

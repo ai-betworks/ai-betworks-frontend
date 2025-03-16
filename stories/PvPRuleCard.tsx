@@ -116,6 +116,7 @@ interface PvPRuleCardProps {
   disabled?: boolean;
   className?: string;
   onClick?: () => void;
+  variant_type?: "room" | "create";
 }
 
 export function PvPRuleCard({
@@ -124,10 +125,19 @@ export function PvPRuleCard({
   disabled = false,
   className,
   onClick,
+  variant_type = "room",
 }: PvPRuleCardProps) {
   const config = ruleConfigs[variant];
 
   const getImpactStyles = (impact: Impact) => {
+    // For room variant, use uniform styling
+    if (variant_type === "room") {
+      return selected
+        ? "border-primary bg-gray-800 text-gray-100"
+        : "border-gray-700 bg-gray-800 hover:border-primary/50 text-gray-100";
+    }
+
+    // For create variant, use impact-based styling
     switch (impact) {
       case Impact.LOW:
         return selected
@@ -149,6 +159,10 @@ export function PvPRuleCard({
         return selected
           ? "border-white bg-white text-black"
           : "border-white/50 bg-white/90 hover:border-white hover:bg-white text-black";
+      default:
+        return selected
+          ? "border-primary bg-gray-800 text-gray-100"
+          : "border-gray-700 bg-gray-800 hover:border-primary/50 text-gray-100";
     }
   };
 
@@ -162,7 +176,7 @@ export function PvPRuleCard({
     <div
       className={cn(
         "flex flex-col items-center p-2 rounded-lg border-2 transition-all group w-[180px]",
-        "hover:scale-105 hover:shadow-lg hover:shadow-white/50",
+        "hover:scale-105 hover:shadow-lg hover:shadow-primary/50",
         getImpactStyles(config.impact),
         getDisabledStyles(disabled),
         className

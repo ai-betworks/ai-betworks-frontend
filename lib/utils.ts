@@ -1,19 +1,20 @@
 import arbitrumFullIcon from "@/stories/assets/crypto/arbitrum-full-primary.svg";
 import arbitrumIcon from "@/stories/assets/crypto/arbitrum.svg";
-import avalancheIcon from "@/stories/assets/crypto/avalanche.svg";
 import baseFullIcon from "@/stories/assets/crypto/base-full-white.svg";
 import baseIcon from "@/stories/assets/crypto/base.svg";
-import flowFullIcon from "@/stories/assets/crypto/flow-full.svg";
-import flowIcon from "@/stories/assets/crypto/flow.svg";
 import scrollFullIcon from "@/stories/assets/crypto/scroll-full-white.svg";
 import scrollIcon from "@/stories/assets/crypto/scroll.svg";
-import solanaIcon from "@/stories/assets/crypto/solana-color.svg";
-import solanaFullIcon from "@/stories/assets/crypto/solana-full-color.svg";
 import sonicFullIcon from "@/stories/assets/crypto/sonic-full-white.svg";
 import sonicIcon from "@/stories/assets/crypto/sonic.svg";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import EthereumLogo from "../stories/assets/crypto/ethereum.png";
+import {
+  BASE_SEPOLIA_APPLICATION_CONTRACT_ADDRESS,
+  ChainMetadata,
+  SCROLL_SEPOLIA_APPLICATION_CONTRACT_ADDRESS,
+  SONIC_BLAZE_APPLICATION_CONTRACT_ADDRESS,
+} from "./config";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -74,35 +75,10 @@ export const addressToBackgroundColor = (address: string) => {
   return `hsl(${hash % 360}, 50%, 50%)`;
 };
 
-export interface ChainMetadata {
-  id: number;
-  name: string;
-  icon: string;
-  iconFull: string;
-  family: "EVM" | "Solana";
-  nativeSymbol: string;
-  primaryColor?: string;
-  contractAddress?: `0x${string}`;
-}
-
-const BASE_SEPOLIA_APPLICATION_CONTRACT_ADDRESS="0x9b6eA75cA1c0dA7693404CB804E2e56753A36e40"
-const SONIC_BLAZE_APPLICATION_CONTRACT_ADDRESS="0xbf9a9a4220102593296bcdff9c8e5feeeec853f1"
-const SCROLL_SEPOLIA_APPLICATION_CONTRACT_ADDRESS="0x68fccd874266afccc047408ca607c725365e7a0d"
-
 export const chainMetadata: Record<number, ChainMetadata> = {
   84532: {
     id: 84532,
     name: "Base Sepolia",
-    icon: baseIcon.src,
-    iconFull: baseFullIcon.src,
-    family: "EVM",
-    nativeSymbol: "ETH",
-    primaryColor: "#0052FF",
-    contractAddress: BASE_SEPOLIA_APPLICATION_CONTRACT_ADDRESS,
-  },
-  8453: {
-    id: 8453,
-    name: "Base",
     icon: baseIcon.src,
     iconFull: baseFullIcon.src,
     family: "EVM",
@@ -121,19 +97,11 @@ export const chainMetadata: Record<number, ChainMetadata> = {
   },
   0: {
     id: 0,
-    name: "Flow",
-    icon: flowIcon.src,
-    iconFull: flowFullIcon.src,
+    name: "Scroll",
+    icon: scrollIcon.src,
+    iconFull: scrollFullIcon.src,
     family: "EVM",
-    nativeSymbol: "FLOW",
-  },
-  1399811149: {
-    id: 1399811149,
-    name: "Solana",
-    icon: solanaIcon.src,
-    iconFull: solanaFullIcon.src,
-    family: "Solana",
-    nativeSymbol: "SOL",
+    nativeSymbol: "ETH",
   },
   1: {
     id: 1,
@@ -142,33 +110,6 @@ export const chainMetadata: Record<number, ChainMetadata> = {
     iconFull: EthereumLogo.src,
     family: "EVM",
     nativeSymbol: "ETH",
-  },
-  43114: {
-    id: 43114,
-    name: "Avalanche",
-    icon: avalancheIcon.src,
-    iconFull: avalancheIcon.src,
-    family: "EVM",
-    nativeSymbol: "AVAX",
-  },
-  43113: {
-    id: 43113,
-    name: "Avalanche Fuji",
-    icon: avalancheIcon.src,
-    iconFull: avalancheIcon.src,
-    family: "EVM",
-    nativeSymbol: "AVAX",
-  },
-  146: {
-    id: 146,
-    name: "Sonic",
-    icon: sonicIcon.src,
-    iconFull: sonicFullIcon.src,
-    family: "EVM",
-    nativeSymbol: "S",
-    primaryColor: "#F5F5F5",
-    // primaryColor: "#141416",
-    contractAddress: SONIC_BLAZE_APPLICATION_CONTRACT_ADDRESS,
   },
   57054: {
     id: 57054,
@@ -198,14 +139,6 @@ export const chainMetadata: Record<number, ChainMetadata> = {
     nativeSymbol: "ETH",
     contractAddress: SCROLL_SEPOLIA_APPLICATION_CONTRACT_ADDRESS,
   },
-} as const;
-
-export const getChainMetadata = (chainId: number): ChainMetadata => {
-  const metadata = chainMetadata[chainId];
-  if (!metadata) {
-    throw new Error(`No metadata found for chain ID ${chainId}`);
-  }
-  return metadata;
 };
 
 export function generateRandomColor(isLight: boolean) {

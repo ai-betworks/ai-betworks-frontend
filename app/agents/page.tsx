@@ -41,7 +41,7 @@ const agentCategories = ["Active", "Inactive"];
 const PAGE_SIZE = 10; // Default 10 agents per page
 
 export default function AgentsPage() {
-  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [selectedCategory, setSelectedCategory] = useState("Active");
   const [agents, setAgents] = useState<Agent[]>([]);
   const [filteredAgents, setFilteredAgents] = useState<Agent[]>([]);
   const [loading, setLoading] = useState(true);
@@ -66,7 +66,10 @@ export default function AgentsPage() {
         }));
 
         setAgents(mappedAgents);
-        setFilteredAgents(mappedAgents); // Set initial filtered agents
+        // Set initial filtered agents to only active ones
+        setFilteredAgents(
+          mappedAgents.filter((agent) => agent.status === "Active")
+        );
       }
       setLoading(false);
     };
